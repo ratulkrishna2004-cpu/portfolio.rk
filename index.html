@@ -304,7 +304,12 @@ body.admin-mode .profile-add-btn{display:flex;}
 }
 .cat-name{font-family:var(--font-head);font-weight:700;font-size:1.05rem;}
 .cat-count{color:var(--text3);font-size:.8rem;}
-.admin-cat-actions{display:none;gap:8px;margin-top:8px;}
+.cat-click-area{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  cursor:pointer;width:100%;padding:8px 0;
+}
+.cat-click-area:hover .cat-name{color:var(--accent3);}
+.admin-cat-actions{display:none;gap:8px;margin-top:4px;justify-content:center;}
 body.admin-mode .admin-cat-actions{display:flex;}
 
 /* Gallery Modal */
@@ -1379,15 +1384,16 @@ function renderCats(){
     const card=document.createElement('div');
     card.className='design-cat-card';
     card.innerHTML=`
-      <div class="cat-icon"><span class="iconify" data-icon="${c.icon}"></span></div>
-      <div class="cat-name">${c.name}</div>
-      <div class="cat-count">${(c.images||[]).length} design${(c.images||[]).length!==1?'s':''}</div>
+      <div class="cat-click-area" onclick="openGallery(${i})">
+        <div class="cat-icon"><span class="iconify" data-icon="${c.icon}"></span></div>
+        <div class="cat-name">${c.name}</div>
+        <div class="cat-count">${(c.images||[]).length} design${(c.images||[]).length!==1?'s':''}</div>
+      </div>
       <div class="admin-cat-actions">
-        <button class="btn-sm btn-save" style="padding:6px 12px;font-size:.75rem" onclick="event.stopPropagation();editCat(${i})">Edit</button>
-        <button class="btn-sm btn-cancel" style="padding:6px 12px;font-size:.75rem;color:#f87171" onclick="event.stopPropagation();delCat(${i})">Delete</button>
+        <button class="btn-sm btn-save" style="padding:6px 12px;font-size:.75rem" onclick="editCat(${i})">✏️ Edit</button>
+        <button class="btn-sm" style="padding:6px 12px;font-size:.75rem;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:20px;cursor:pointer;" onclick="deleteCat(${i})">🗑️ Delete</button>
       </div>
     `;
-    card.addEventListener('click',()=>openGallery(i));
     container.appendChild(card);
   });
 }
@@ -1415,16 +1421,14 @@ function saveCat(){
   if(idx>=0) state.cats[idx]=obj; else state.cats.push(obj);
   save('cats',state.cats); renderCats(); closeModal('catModal');
 }
-function delCat(i){ 
-  event.stopPropagation();
-  setTimeout(()=>{
-    if(confirm('Delete this category and all images?')){ 
-      state.cats.splice(i,1); 
-      save('cats',state.cats); 
-      renderCats(); 
-    }
-  },10);
+function deleteCat(i){
+  if(confirm('Delete "'+state.cats[i].name+'" and all its images?')){ 
+    state.cats.splice(i,1); 
+    save('cats',state.cats); 
+    renderCats(); 
+  }
 }
+function delCat(i){ deleteCat(i); }
 function previewCatIcon(v){ document.getElementById('catIconPreview').innerHTML=v?`<span class="iconify" data-icon="${v}"></span>`:''; }
 
 // ══════════════════════════════════════

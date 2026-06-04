@@ -279,98 +279,175 @@ body.admin-mode .profile-add-btn{display:flex;}
 .awards-extra.visible{display:contents;}
 
 /* ═══════════════════════════════
-   PROJECTS PAGE
+   PROJECTS PAGE — 3D ELECTRICAL
 ═══════════════════════════════ */
-.design-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+.design-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;}
+
 .design-cat-card{
-  padding:28px;border-radius:var(--radius);
-  background:var(--glass);border:1px solid var(--glass-border);
-  cursor:pointer;transition:.3s;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;
+  border-radius:20px;
+  background:linear-gradient(145deg,rgba(20,10,40,.9),rgba(10,5,25,.95));
+  border:1px solid rgba(168,85,247,.2);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:0 0 16px 0;
+  transition:transform .3s,box-shadow .3s,border-color .3s;
+  box-shadow:0 4px 24px rgba(0,0,0,.4),0 0 0 1px rgba(168,85,247,.08);
 }
+.design-cat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--accent3),transparent);
+  opacity:.7;
+}
+/* circuit line decoration */
 .design-cat-card::after{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 50% 50%,rgba(168,85,247,.08),transparent 70%);
-  opacity:0;transition:.3s;
+  content:'';position:absolute;bottom:0;left:0;right:0;height:60px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60'%3E%3Cpath d='M0 40 L40 40 L40 20 L80 20 L80 40 L120 40 L120 10 L160 10 L160 40 L200 40' stroke='rgba(168,85,247,0.15)' stroke-width='1' fill='none'/%3E%3Ccircle cx='40' cy='40' r='2.5' fill='rgba(168,85,247,0.3)'/%3E%3Ccircle cx='80' cy='40' r='2.5' fill='rgba(168,85,247,0.3)'/%3E%3Ccircle cx='120' cy='40' r='2.5' fill='rgba(168,85,247,0.3)'/%3E%3Ccircle cx='160' cy='40' r='2.5' fill='rgba(168,85,247,0.3)'/%3E%3C/svg%3E") center/cover no-repeat;
+  pointer-events:none;opacity:.6;
 }
-.design-cat-card:hover{border-color:rgba(168,85,247,.5);transform:translateY(-4px);box-shadow:0 8px 32px var(--glow2);}
-.design-cat-card:hover::after{opacity:1;}
-.cat-icon{
-  width:64px;height:64px;border-radius:16px;
-  background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2);
+.design-cat-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  border-color:rgba(168,85,247,.55);
+  box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 30px rgba(168,85,247,.18),0 0 0 1px rgba(168,85,247,.2);
+}
+
+/* Top image banner */
+.cat-banner{
+  width:100%;height:130px;
+  background:linear-gradient(135deg,rgba(120,40,255,.15),rgba(168,85,247,.08));
   display:flex;align-items:center;justify-content:center;
-  font-size:1.8rem;
-  box-shadow:0 0 20px rgba(168,85,247,.2);
+  position:relative;overflow:hidden;border-radius:20px 20px 0 0;
 }
-.cat-name{font-family:var(--font-head);font-weight:700;font-size:1.05rem;}
-.cat-count{color:var(--text3);font-size:.8rem;}
-.cat-click-area{
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  cursor:pointer;width:100%;padding:8px 0;
+.cat-banner-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(168,85,247,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(168,85,247,.07) 1px,transparent 1px);
+  background-size:24px 24px;
 }
+.cat-icon{
+  width:72px;height:72px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(124,58,237,.4),rgba(168,85,247,.2));
+  border:1px solid rgba(168,85,247,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;position:relative;z-index:1;
+  box-shadow:0 0 24px rgba(168,85,247,.3),0 4px 16px rgba(0,0,0,.3);
+}
+.cat-body{padding:16px 20px 4px;width:100%;}
+.cat-name{font-family:var(--font-head);font-weight:700;font-size:1.05rem;margin-bottom:4px;}
+.cat-count{
+  color:var(--accent3);font-size:.78rem;
+  background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);
+  display:inline-block;padding:2px 10px;border-radius:10px;
+}
+.cat-click-area{cursor:pointer;width:100%;}
 .cat-click-area:hover .cat-name{color:var(--accent3);}
-.admin-cat-actions{display:none;gap:8px;margin-top:4px;justify-content:center;}
+
+/* Admin bottom bar */
+.admin-cat-actions{
+  display:none;gap:0;width:100%;margin-top:12px;
+  border-top:1px solid rgba(168,85,247,.12);
+}
 body.admin-mode .admin-cat-actions{display:flex;}
+.cat-action-btn{
+  flex:1;padding:10px;font-size:.82rem;font-family:var(--font-body);
+  border:none;cursor:pointer;transition:.2s;font-weight:500;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.cat-edit-btn{
+  background:rgba(168,85,247,.08);color:var(--accent3);
+  border-right:1px solid rgba(168,85,247,.12);
+}
+.cat-edit-btn:hover{background:rgba(168,85,247,.18);}
+.cat-del-btn{
+  background:rgba(239,68,68,.06);color:#f87171;
+}
+.cat-del-btn:hover{background:rgba(239,68,68,.15);}
 
 /* Gallery Modal */
 .gallery-modal{
   display:none;position:fixed;inset:0;z-index:200;
-  background:rgba(0,0,0,.85);backdrop-filter:blur(8px);
+  background:rgba(0,0,0,.92);backdrop-filter:blur(10px);
   flex-direction:column;
 }
 .gallery-modal.open{display:flex;}
 .gallery-header{
   display:flex;align-items:center;justify-content:space-between;
   padding:16px 24px;border-bottom:1px solid var(--glass-border);
-  background:rgba(8,8,16,.8);
+  background:linear-gradient(90deg,rgba(8,8,16,.95),rgba(15,5,30,.95));
 }
+.gallery-header-left{display:flex;align-items:center;gap:16px;}
 .gallery-title{font-family:var(--font-head);font-weight:700;font-size:1.2rem;}
-.gallery-close{
-  background:none;border:none;color:var(--text2);font-size:1.5rem;
-  cursor:pointer;padding:4px 10px;border-radius:8px;transition:.2s;
+.gallery-add-btn{
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  border:none;color:#fff;padding:8px 18px;border-radius:20px;
+  cursor:pointer;font-size:.82rem;font-family:var(--font-body);
+  display:none;align-items:center;gap:6px;
+  box-shadow:0 0 16px var(--glow);transition:.2s;
 }
-.gallery-close:hover{color:var(--accent);background:rgba(168,85,247,.1);}
+body.admin-mode .gallery-add-btn{display:flex;}
+.gallery-add-btn:hover{box-shadow:0 0 24px var(--glow);}
+.gallery-close{
+  background:rgba(255,255,255,.06);border:1px solid var(--glass-border);
+  color:var(--text2);font-size:1rem;
+  cursor:pointer;padding:8px 16px;border-radius:20px;transition:.2s;
+}
+.gallery-close:hover{color:var(--accent);border-color:var(--accent);}
+
+/* Serial masonry grid */
 .gallery-body{
   flex:1;overflow-y:auto;padding:24px;
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;
-  align-content:start;
+  columns:3;column-gap:16px;
 }
+@media(max-width:900px){.gallery-body{columns:2;}}
+@media(max-width:500px){.gallery-body{columns:1;}}
+
 .gallery-img-wrap{
-  border-radius:12px;overflow:hidden;
+  break-inside:avoid;margin-bottom:16px;
+  border-radius:14px;overflow:hidden;
   background:var(--glass);border:1px solid var(--glass-border);
-  position:relative;cursor:pointer;transition:.3s;
+  position:relative;cursor:pointer;transition:.3s;display:block;
 }
 .gallery-img-wrap:hover{border-color:rgba(168,85,247,.5);box-shadow:0 0 20px var(--glow2);}
 .gallery-img-wrap img{width:100%;display:block;}
 .gallery-img-del{
   display:none;position:absolute;top:8px;right:8px;
-  background:rgba(239,68,68,.8);border:none;border-radius:8px;
-  color:#fff;padding:4px 8px;cursor:pointer;font-size:.75rem;
+  background:rgba(239,68,68,.85);border:none;border-radius:8px;
+  color:#fff;padding:5px 10px;cursor:pointer;font-size:.75rem;font-weight:600;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
 }
 body.admin-mode .gallery-img-del{display:block;}
-.gallery-add-area{
-  display:none;border:2px dashed rgba(168,85,247,.3);border-radius:12px;
-  padding:32px;text-align:center;color:var(--text3);cursor:pointer;
-  transition:.3s;
+
+.gallery-empty{
+  text-align:center;padding:80px 24px;color:var(--text3);
+  grid-column:1/-1;
 }
-body.admin-mode .gallery-add-area{display:block;}
-.gallery-add-area:hover{border-color:var(--accent);color:var(--accent3);background:rgba(168,85,247,.05);}
+.gallery-empty-icon{font-size:3rem;margin-bottom:12px;opacity:.3;}
 
 /* Lightbox */
 .lightbox{
   display:none;position:fixed;inset:0;z-index:300;
-  background:rgba(0,0,0,.92);
+  background:rgba(0,0,0,.95);
   align-items:center;justify-content:center;flex-direction:column;gap:16px;
 }
 .lightbox.open{display:flex;}
-.lightbox img{max-width:90vw;max-height:80vh;border-radius:12px;box-shadow:0 0 60px rgba(168,85,247,.3);}
+.lightbox img{max-width:92vw;max-height:82vh;border-radius:14px;box-shadow:0 0 80px rgba(168,85,247,.25);}
 .lightbox-close{
   position:absolute;top:20px;right:20px;
-  background:rgba(168,85,247,.2);border:1px solid rgba(168,85,247,.3);
-  color:var(--text);padding:8px 16px;border-radius:20px;cursor:pointer;
-  font-family:var(--font-body);transition:.2s;
+  background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);
+  color:var(--text);padding:8px 18px;border-radius:20px;cursor:pointer;
+  font-family:var(--font-body);transition:.2s;font-size:.85rem;
 }
-.lightbox-close:hover{background:rgba(168,85,247,.4);}
+.lightbox-close:hover{background:rgba(168,85,247,.35);}
+.lightbox-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.2);
+  color:var(--text);width:44px;height:44px;border-radius:50%;
+  cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;
+  transition:.2s;
+}
+.lightbox-nav:hover{background:rgba(168,85,247,.35);}
+#lightboxPrev{left:20px;}
+#lightboxNext{right:20px;}
 
 /* ═══════════════════════════════
    CV PAGE
@@ -904,23 +981,25 @@ footer{
 <!-- ─── GALLERY MODAL ─── -->
 <div class="gallery-modal" id="galleryModal">
   <div class="gallery-header">
-    <div class="gallery-title" id="galleryTitle">Category</div>
-    <button class="gallery-close" onclick="closeGallery()">✕</button>
-  </div>
-  <div class="gallery-body" id="galleryBody">
-    <div class="gallery-add-area" onclick="document.getElementById('galleryUpload').click()">
-      <div style="font-size:2rem;margin-bottom:8px">📁</div>
-      <div>Click to add images</div>
-      <small style="color:var(--text3)">Original ratio preserved</small>
+    <div class="gallery-header-left">
+      <button class="gallery-close" onclick="closeGallery()">← Back</button>
+      <div class="gallery-title" id="galleryTitle">Category</div>
     </div>
+    <button class="gallery-add-btn" onclick="document.getElementById('galleryUpload').click()">
+      ＋ Add Images
+    </button>
+    <button class="gallery-close" onclick="closeGallery()" style="margin-left:8px">✕</button>
   </div>
+  <div class="gallery-body" id="galleryBody"></div>
 </div>
 <input type="file" id="galleryUpload" style="display:none" accept="image/*" multiple onchange="handleGalleryUpload(this)"/>
 
 <!-- ─── LIGHTBOX ─── -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+<div class="lightbox" id="lightbox">
   <button class="lightbox-close" onclick="closeLightbox()">✕ Close</button>
-  <img id="lightboxImg" src="" alt=""/>
+  <button class="lightbox-nav" id="lightboxPrev" onclick="lightboxNav(-1)">‹</button>
+  <img id="lightboxImg" src="" alt="" onclick="lightboxNav(1)"/>
+  <button class="lightbox-nav" id="lightboxNext" onclick="lightboxNav(1)">›</button>
 </div>
 
 <!-- ─── ADMIN LOGIN MODAL ─── -->
@@ -1383,15 +1462,23 @@ function renderCats(){
   state.cats.forEach((c,i)=>{
     const card=document.createElement('div');
     card.className='design-cat-card';
+    // preview: show first image as banner bg if exists
+    const imgs=c.images||[];
+    const bannerBg=imgs.length?`background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url(${imgs[0]}) center/cover`:'';
     card.innerHTML=`
       <div class="cat-click-area" onclick="openGallery(${i})">
-        <div class="cat-icon"><span class="iconify" data-icon="${c.icon}"></span></div>
-        <div class="cat-name">${c.name}</div>
-        <div class="cat-count">${(c.images||[]).length} design${(c.images||[]).length!==1?'s':''}</div>
+        <div class="cat-banner" ${bannerBg?`style="${bannerBg}"`:''}> 
+          <div class="cat-banner-grid"></div>
+          <div class="cat-icon"><span class="iconify" data-icon="${c.icon}"></span></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-count">${imgs.length} design${imgs.length!==1?'s':''}</div>
+        </div>
       </div>
       <div class="admin-cat-actions">
-        <button class="btn-sm btn-save" style="padding:6px 12px;font-size:.75rem" onclick="editCat(${i})">✏️ Edit</button>
-        <button class="btn-sm" style="padding:6px 12px;font-size:.75rem;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:20px;cursor:pointer;" onclick="deleteCat(${i})">🗑️ Delete</button>
+        <button class="cat-action-btn cat-edit-btn" onclick="editCat(${i})">✏️ Edit</button>
+        <button class="cat-action-btn cat-del-btn" onclick="deleteCat(${i})">🗑️ Delete</button>
       </div>
     `;
     container.appendChild(card);
@@ -1435,6 +1522,9 @@ function previewCatIcon(v){ document.getElementById('catIconPreview').innerHTML=
 // GALLERY
 // ══════════════════════════════════════
 let currentCatIdx = -1;
+let currentLightboxImgs=[];
+let currentLightboxIdx=0;
+
 function openGallery(i){
   currentCatIdx=i;
   const cat=state.cats[i];
@@ -1447,21 +1537,20 @@ function renderGallery(){
   const cat=state.cats[currentCatIdx];
   const imgs=cat.images||[];
   body.innerHTML='';
-  // add area (admin)
-  const addArea=document.createElement('div');
-  addArea.className='gallery-add-area';
-  addArea.onclick=()=>document.getElementById('galleryUpload').click();
-  addArea.innerHTML='<div style="font-size:2rem;margin-bottom:8px">📁</div><div>Click to add images</div><small style="color:var(--text3)">Original ratio preserved</small>';
-  body.appendChild(addArea);
+  if(!imgs.length){
+    body.innerHTML='<div class="gallery-empty"><div class="gallery-empty-icon">🖼️</div><p>No designs yet</p><p style="font-size:.8rem;margin-top:8px">Admin mode: click "+ Add Images" to upload</p></div>';
+    return;
+  }
   imgs.forEach((src,j)=>{
     const wrap=document.createElement('div');
     wrap.className='gallery-img-wrap';
     wrap.innerHTML=`
-      <img src="${src}" alt="Design ${j+1}" onclick="openLightbox('${src}')"/>
-      <button class="gallery-img-del" onclick="delGalleryImg(${j})">✕ Delete</button>
+      <img src="${src}" alt="Design ${j+1}" onclick="openLightbox(${j})"/>
+      <button class="gallery-img-del" onclick="event.stopPropagation();delGalleryImg(${j})">✕</button>
     `;
     body.appendChild(wrap);
   });
+  currentLightboxImgs=imgs;
 }
 function handleGalleryUpload(input){
   const files=Array.from(input.files);
@@ -1486,14 +1575,19 @@ function delGalleryImg(j){
 }
 function closeGallery(){ document.getElementById('galleryModal').classList.remove('open'); }
 
-// ══════════════════════════════════════
-// LIGHTBOX
-// ══════════════════════════════════════
-function openLightbox(src){
-  document.getElementById('lightboxImg').src=src;
+function openLightbox(idx){
+  currentLightboxIdx=idx;
+  document.getElementById('lightboxImg').src=currentLightboxImgs[idx];
   document.getElementById('lightbox').classList.add('open');
 }
 function closeLightbox(){ document.getElementById('lightbox').classList.remove('open'); }
+function lightboxNav(dir){
+  currentLightboxIdx=(currentLightboxIdx+dir+currentLightboxImgs.length)%currentLightboxImgs.length;
+  document.getElementById('lightboxImg').src=currentLightboxImgs[currentLightboxIdx];
+}
+document.getElementById('lightbox').addEventListener('click',function(e){
+  if(e.target===this) closeLightbox();
+});
 
 // ══════════════════════════════════════
 // RESEARCH

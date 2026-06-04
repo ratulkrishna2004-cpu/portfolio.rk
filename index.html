@@ -1319,7 +1319,7 @@ function saveAward(){
   if(idx>=0) state.awards[idx]=obj; else state.awards.push(obj);
   save('awards',state.awards); renderAwards(); closeModal('awardModal');
 }
-function delAward(i){ if(confirm('Delete this award?')){ state.awards.splice(i,1); save('awards',state.awards); renderAwards(); } }
+function delAward(i){ setTimeout(()=>{ if(confirm('Delete this award?')){ state.awards.splice(i,1); save('awards',state.awards); renderAwards(); }},10); }
 
 // ══════════════════════════════════════
 // EDUCATION
@@ -1367,7 +1367,7 @@ function saveEdu(){
   if(idx>=0) state.edu[idx]=obj; else state.edu.push(obj);
   save('edu',state.edu); renderEdu(); closeModal('eduModal');
 }
-function delEdu(i){ if(confirm('Delete?')){ state.edu.splice(i,1); save('edu',state.edu); renderEdu(); } }
+function delEdu(i){ setTimeout(()=>{ if(confirm('Delete?')){ state.edu.splice(i,1); save('edu',state.edu); renderEdu(); }},10); }
 
 // ══════════════════════════════════════
 // DESIGN CATEGORIES
@@ -1415,7 +1415,16 @@ function saveCat(){
   if(idx>=0) state.cats[idx]=obj; else state.cats.push(obj);
   save('cats',state.cats); renderCats(); closeModal('catModal');
 }
-function delCat(i){ if(confirm('Delete this category and all images?')){ state.cats.splice(i,1); save('cats',state.cats); renderCats(); } }
+function delCat(i){ 
+  event.stopPropagation();
+  setTimeout(()=>{
+    if(confirm('Delete this category and all images?')){ 
+      state.cats.splice(i,1); 
+      save('cats',state.cats); 
+      renderCats(); 
+    }
+  },10);
+}
 function previewCatIcon(v){ document.getElementById('catIconPreview').innerHTML=v?`<span class="iconify" data-icon="${v}"></span>`:''; }
 
 // ══════════════════════════════════════
@@ -1464,10 +1473,12 @@ function handleGalleryUpload(input){
   input.value='';
 }
 function delGalleryImg(j){
-  if(confirm('Delete this image?')){
-    state.cats[currentCatIdx].images.splice(j,1);
-    save('cats',state.cats); renderGallery(); renderCats();
-  }
+  setTimeout(()=>{
+    if(confirm('Delete this image?')){
+      state.cats[currentCatIdx].images.splice(j,1);
+      save('cats',state.cats); renderGallery(); renderCats();
+    }
+  },10);
 }
 function closeGallery(){ document.getElementById('galleryModal').classList.remove('open'); }
 
@@ -1531,7 +1542,7 @@ function saveResearch(){
   if(idx>=0) state.research[idx]=obj; else state.research.push(obj);
   save('research',state.research); renderResearch(); closeModal('researchModal');
 }
-function delResearch(i){ if(confirm('Delete?')){ state.research.splice(i,1); save('research',state.research); renderResearch(); } }
+function delResearch(i){ setTimeout(()=>{ if(confirm('Delete?')){ state.research.splice(i,1); save('research',state.research); renderResearch(); }},10); }
 
 // ══════════════════════════════════════
 // SKILLS
@@ -1646,7 +1657,7 @@ function editSkillCatName(ci){
   const n=prompt('Category name:',state.skills[ci].cat);
   if(n){ state.skills[ci].cat=n; save('skills',state.skills); renderSkills(); }
 }
-function delSkillCat(ci){ if(confirm('Delete category?')){ state.skills.splice(ci,1); save('skills',state.skills); renderSkills(); } }
+function delSkillCat(ci){ setTimeout(()=>{ if(confirm('Delete category?')){ state.skills.splice(ci,1); save('skills',state.skills); renderSkills(); }},10); }
 function delSkill(ci,si){ state.skills[ci].items.splice(si,1); save('skills',state.skills); renderSkills(); }
 
 // ══════════════════════════════════════
@@ -1847,7 +1858,7 @@ function saveContact(){
   if(idx>=0) state.contacts[idx]=obj; else state.contacts.push(obj);
   save('contacts',state.contacts); renderContacts(); closeModal('contactModal');
 }
-function delContact(i){ if(confirm('Delete this contact?')){ state.contacts.splice(i,1); save('contacts',state.contacts); renderContacts(); } }
+function delContact(i){ setTimeout(()=>{ if(confirm('Delete this contact?')){ state.contacts.splice(i,1); save('contacts',state.contacts); renderContacts(); }},10); }
 
 // Contact icon search
 const CONTACT_ICONS=[

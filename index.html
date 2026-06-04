@@ -853,7 +853,7 @@ footer{
       <div class="footer-sub">Feel free to reach out for collaborations, projects, or just a chat!</div>
       <div class="contact-grid" id="contactGrid"></div>
       <div class="footer-bottom">
-        <div class="footer-copy">© 2025 Ratul Krishna Mojumder </div>
+        <div class="footer-copy">© 2025 Ratul Krishna Mojumder · Designed with 💜</div>
         <button class="admin-btn" style="display:none" id="addContactBtn" onclick="openAddContact()">
           <span class="iconify" data-icon="ph:plus-circle"></span> Add Contact
         </button>
@@ -878,7 +878,7 @@ footer{
       <div class="footer-title">Let's Connect ✨</div>
       <div class="footer-sub">Available for freelance design projects!</div>
       <div class="contact-grid shared-footer-grid"></div>
-      <div class="footer-bottom"><div class="footer-copy">© 2025 Ratul Krishna Mojumder </div></div>
+      <div class="footer-bottom"><div class="footer-copy">© 2025 Ratul Krishna Mojumder · Designed with 💜</div></div>
     </div>
   </footer>
 </div>
@@ -910,7 +910,7 @@ footer{
     <div class="footer-inner">
       <div class="footer-title">Let's Connect ✨</div>
       <div class="contact-grid shared-footer-grid"></div>
-      <div class="footer-bottom"><div class="footer-copy">© 2025 Ratul Krishna Mojumder </div></div>
+      <div class="footer-bottom"><div class="footer-copy">© 2025 Ratul Krishna Mojumder · Designed with 💜</div></div>
     </div>
   </footer>
 </div>
@@ -948,7 +948,7 @@ footer{
     <div class="footer-inner">
       <div class="footer-title">Let's Connect ✨</div>
       <div class="contact-grid shared-footer-grid"></div>
-      <div class="footer-bottom"><div class="footer-copy">© 2025 Ratul Krishna Mojumder </div></div>
+      <div class="footer-bottom"><div class="footer-copy">© 2025 Ratul Krishna Mojumder · Designed with 💜</div></div>
     </div>
   </footer>
 </div>
@@ -973,7 +973,7 @@ footer{
     <div class="footer-inner">
       <div class="footer-title">Let's Connect ✨</div>
       <div class="contact-grid shared-footer-grid"></div>
-      <div class="footer-bottom"><div class="footer-copy">© 2025 Ratul Krishna Mojumder </div></div>
+      <div class="footer-bottom"><div class="footer-copy">© 2025 Ratul Krishna Mojumder · Designed with 💜</div></div>
     </div>
   </footer>
 </div>
@@ -2090,5 +2090,86 @@ function init(){
 }
 init();
 </script>
+<script type="module">
+  // ১. Firebase এর মডিউলগুলো ইমপোর্ট করা
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
+
+  // আপনার আসল Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAGBsipDr6skfsvDrYHHCe7CK9AWcCt-dA",
+    authDomain: "portfolio-rk-41348.firebaseapp.com",
+    databaseURL: "https://portfolio-rk-41348-default-rtdb.firebaseio.com",
+    projectId: "portfolio-rk-41348",
+    storageBucket: "portfolio-rk-41348.firebasestorage.app",
+    messagingSenderId: "1012347569431",
+    appId: "1:1012347569431:web:75d9d60efc9513ac63e352",
+    measurementId: "G-EXC67LS81T"
+  };
+
+  // Firebase Initialize করা
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const storage = getStorage(app);
+
+  // ----------------------------------------------------
+  // গ্যালারিতে স্থায়ীভাবে ছবি আপলোড করার ফাংশন (Admin Panel এর জন্য)
+  // ----------------------------------------------------
+  window.uploadDesignToCloud = function(fileInputElement, category, title) {
+    const file = fileInputElement.files[0];
+    if (!file) {
+      alert("Please select an image first!");
+      return;
+    }
+
+    // Storage-এ ইউনিক ফাইল পাথ তৈরি
+    const imageRef = sRef(storage, `gallery/${Date.now()}_${file.name}`);
+
+    // ছবি আপলোড শুরু
+    uploadBytes(imageRef, file).then((snapshot) => {
+      return getDownloadURL(snapshot.ref); // পার্মানেন্ট ইউআরএল নেওয়া
+    }).then((downloadURL) => {
+      
+      // Realtime Database-এ পাথ তৈরি করে ডেটা পুশ করা
+      const galleryRef = ref(database, `portfolio/gallery/${category}`);
+      const newDesignRef = push(galleryRef);
+      
+      set(newDesignRef, {
+        title: title,
+        image: downloadURL, // এই লিঙ্কের মাধ্যমে চিরকাল ছবি দেখা যাবে
+        uploadedAt: new Date().toISOString()
+      });
+
+      alert("Design uploaded permanently to cloud!");
+    }).catch((error) => {
+      console.error("Upload failed:", error);
+      alert("Upload failed. Check Firebase Storage rules.");
+    });
+  };
+
+  // ----------------------------------------------------
+  // ডেটাবেস থেকে ডাটা রিয়েলটাইমে রিড করার ফাংশন
+  // ----------------------------------------------------
+  window.loadGalleryFromCloud = function() {
+    const galleryRef = ref(database, 'portfolio/gallery');
+    
+    onValue(galleryRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        console.log("Firebase data loaded:", data);
+        // ক্লাউড থেকে ডাটা চলে আসলে এখানে আপনার ডম রেন্ডারিং লজিক কাজ করবে
+      }
+    });
+  };
+
+  // পেজ লোড হওয়ার সাথে সাথে গ্যালারি ডাটা সিঙ্ক হবে
+  window.addEventListener('DOMContentLoaded', () => {
+    window.loadGalleryFromCloud();
+  });
+</script>
+
+</body>
+</html>
 </body>
 </html>

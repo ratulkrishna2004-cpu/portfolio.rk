@@ -715,8 +715,7 @@ footer{
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-import { getStorage, ref as sRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAGBsipDr6skfsvDrYHHCe7CK9AWcCt-dA",
@@ -725,38 +724,22 @@ import { getStorage, ref as sRef, uploadString, getDownloadURL } from "https://w
     projectId: "portfolio-rk-41348",
     storageBucket: "portfolio-rk-41348.firebasestorage.app",
     messagingSenderId: "1012347569431",
-    appId: "1:1012347569431:web:75d9d60efc9513ac63e352",
-    measurementId: "G-EXC67LS81T"
+    appId: "1:1012347569431:web:75d9d60efc9513ac63e352"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-const storage = getStorage(app);
 
-  // Firebase থেকে save করার function
   window.fbSave = function(key, val) {
     set(ref(db, 'portfolio/' + key), val);
   };
 
-  // Firebase থেকে সব data load করে init চালানো
-  onValue(ref(db, 'portfolio'), (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      if (data.awards)     { state.awards     = data.awards;     renderAwards(); }
-      if (data.cats)       { state.cats       = data.cats;       renderCats(); }
-      if (data.skills)     { state.skills     = data.skills;     renderSkills(); }
-      if (data.research)   { state.research   = data.research;   renderResearch(); }
-      if (data.edu)        { state.edu        = data.edu;        renderEdu(); }
-      if (data.contacts)   { state.contacts   = data.contacts;   renderContacts(); }
-      if (data.profileImg) { state.profileImg = data.profileImg; renderProfileImg(); }
-    }
-  });
-window.uploadImageToStorage = async function(base64data, path) {
-  const imageRef = sRef(storage, path);
-  await uploadString(imageRef, base64data, 'data_url');
-  const url = await getDownloadURL(imageRef);
-  return url;
-};
+  window.fbListen = function(callback) {
+    onValue(ref(db, 'portfolio'), (snapshot) => {
+      const data = snapshot.val();
+      if (data) callback(data);
+    });
+  };
 </script>
 </head>
 <body>
@@ -1156,9 +1139,16 @@ window.uploadImageToStorage = async function(base64data, path) {
   <div class="modal crop-modal">
     <h2>📸 Set Profile Photo</h2>
     <input type="file" id="profileUploadInput" accept="image/*" style="display:none" onchange="handleProfileUpload(this)"/>
-    <div style="text-align:center;margin-bottom:16px">
-      <button class="btn-sm btn-save" onclick="document.getElementById('profileUploadInput').click()">Choose Photo</button>
-    </div>
+<div style="display:flex;gap:8px;margin-bottom:16px">
+  <input type="text" id="profileUrlInput" placeholder="GitHub image URL paste করো..." 
+    style="flex:1;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.06);
+    border:1px solid var(--glass-border);color:var(--text);font-family:var(--font-body);
+    font-size:.85rem;outline:none"/>
+  <button class="btn-sm btn-save" onclick="loadFromUrl()">Load</button>
+</div>
+<div style="text-align:center;margin-bottom:8px">
+  <button class="btn-sm btn-cancel" onclick="document.getElementById('profileUploadInput').click()">📁 Local File</button>
+</div>
     <div class="crop-stage" id="cropStage">
       <img id="cropImg" src="" alt="" draggable="false"/>
     </div>
@@ -1631,13 +1621,17 @@ async function handleGalleryUpload(input){
     const reader=new FileReader();
     reader.onload=async e=>{
       try{
-        const path = 'gallery/' + currentCatIdx + '/' + Date.now() + '_' + file.name;
-        const url = await window.uploadImageToStorage(e.target.result, path);
+        const base64=e.target.result.split(',')[1];
+        const formData=new FormData();
+        formData.append('image',base64);
+        const res=await fetch('https://api.imgbb.com/1/upload?key=YOUR_IMGBB_KEY',{method:'POST',body:formData});
+        const data=await res.json();
+        const url=data.data.url;
         if(!state.cats[currentCatIdx].images) state.cats[currentCatIdx].images=[];
         state.cats[currentCatIdx].images.push(url);
         save('cats',state.cats); renderGallery(); renderCats();
-      } catch(err){
-        alert('Upload failed: ' + err.message);
+      }catch(err){
+        alert('Upload failed: '+err.message);
       }
     };
     reader.readAsDataURL(file);
@@ -1845,6 +1839,20 @@ function openCropModal(){
   if(!isAdmin) return;
   openModal('cropModal');
 }
+function loadFromUrl(){
+  const url = document.getElementById('profileUrlInput').value.trim();
+  if(!url) return;
+  const img = document.getElementById('cropImg');
+  img.crossOrigin = 'anonymous';
+  img.src = url;
+  img.onload = ()=>{
+    cropData={x:0,y:0,scale:1,dragging:false,startX:0,startY:0,
+      imgW:img.naturalWidth,imgH:img.naturalHeight};
+    document.getElementById('cropZoom').value=1;
+    updateCrop();
+  };
+  img.onerror = ()=>alert('Image load হয়নি। URL টা ঠিক আছে কিনা দেখো।');
+}
 function handleProfileUpload(input){
   const file=input.files[0];
   if(!file) return;
@@ -1914,14 +1922,21 @@ function applyCrop(){
   const dataURL=canvas.toDataURL('image/jpeg',0.85);
 (async()=>{
   try{
-    const url = await window.uploadImageToStorage(dataURL, 'profile/photo_' + Date.now() + '.jpg');
-    state.profileImg=url; save('profileImg',url);
-    renderProfileImg();
-    closeModal('cropModal');
-  } catch(err){
+    const base64=dataURL.split(',')[1];
+    const formData=new FormData();
+    formData.append('image',base64);
+    const res=await fetch('https://api.imgbb.com/1/upload?key=YOUR_IMGBB_KEY',{method:'POST',body:formData});
+    const data=await res.json();
+    const url=data.data.url;
+    state.profileImg=dataURL; 
+save('profileImg',dataURL);
+renderProfileImg();
+closeModal('cropModal');
+} catch(err){
     alert('Profile upload failed: '+err.message);
   }
 })();
+  
 }
 function renderProfileImg(){
   const cont=document.getElementById('profileImgContainer');
@@ -2162,10 +2177,22 @@ function init(){
   renderResearch();
   renderProfileImg();
   renderContacts();
-  // Check if Iconify loaded; if not, show SVG fallbacks for contacts
+
+  // Firebase থেকে real-time data load
+  if(typeof window.fbListen === 'function'){
+    window.fbListen((data)=>{
+      if(data.awards)     { state.awards=data.awards;         renderAwards(); }
+      if(data.cats)       { state.cats=data.cats;             renderCats(); if(currentCatIdx>=0) renderGallery(); }
+      if(data.skills)     { state.skills=data.skills;         renderSkills(); }
+      if(data.research)   { state.research=data.research;     renderResearch(); }
+      if(data.edu)        { state.edu=data.edu;               renderEdu(); }
+      if(data.contacts)   { state.contacts=data.contacts;     renderContacts(); }
+      if(data.profileImg) { state.profileImg=data.profileImg; renderProfileImg(); }
+    });
+  }
+
   setTimeout(()=>{
     document.querySelectorAll('.contact-card-icon .iconify').forEach(el=>{
-      // If iconify didn't replace it with SVG, it stays as a span with no dimensions
       if(el.offsetWidth < 5){
         el.style.display='none';
         const fallback = el.nextElementSibling;

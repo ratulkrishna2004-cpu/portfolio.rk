@@ -716,6 +716,7 @@ footer{
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getStorage, ref as sRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAGBsipDr6skfsvDrYHHCe7CK9AWcCt-dA",
@@ -730,6 +731,7 @@ footer{
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+const storage = getStorage(app);
 
   // Firebase থেকে save করার function
   window.fbSave = function(key, val) {
@@ -749,6 +751,12 @@ footer{
       if (data.profileImg) { state.profileImg = data.profileImg; renderProfileImg(); }
     }
   });
+window.uploadImageToStorage = async function(base64data, path) {
+  const imageRef = sRef(storage, path);
+  await uploadString(imageRef, base64data, 'data_url');
+  const url = await getDownloadURL(imageRef);
+  return url;
+};
 </script>
 </head>
 <body>
@@ -1544,16 +1552,48 @@ function editCat(i){
 }
 function saveCat(){
   const idx=parseInt(document.getElementById('catEditIdx').value);
-  const obj={name:document.getElementById('catName').value,icon:document.getElementById('catIcon').value,images:idx>=0?(state.cats[idx].images||[]):[]};
+  const obj={
+    name:document.getElementById('catName').value,
+    icon:document.getElementById('catIcon').value,
+    images:idx>=0?(state.cats[idx].images||[]):[]
+  };
   if(!obj.name) return;
-  if(idx>=0) state.cats[idx]=obj; else state.cats.push(obj);
-  save('cats',state.cats); renderCats(); closeModal('catModal');
+
+  const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxTtlqcabAigXoWs4-j23BSSbPV_7m4r-FGgYj25lNyibNxh9O6z8LMTDonTjWM1nQJ/exec';
+
+  if(idx>=0){
+    // Edit — rename column in sheet
+    const oldName=state.cats[idx].name;
+    if(oldName !== obj.name){
+      fetch(SCRIPT_URL, {
+        method:'POST',
+        body:JSON.stringify({action:'renameColumn', oldName:oldName, newName:obj.name})
+      });
+    }
+    state.cats[idx]=obj;
+  } else {
+    // Add — new column in sheet
+    fetch(SCRIPT_URL, {
+      method:'POST',
+      body:JSON.stringify({action:'addColumn', name:obj.name})
+    });
+    state.cats.push(obj);
+  }
+
+  save('cats',state.cats);
+  renderCats();
+  closeModal('catModal');
 }
 function deleteCat(i){
-  if(confirm('Delete "'+state.cats[i].name+'" and all its images?')){ 
-    state.cats.splice(i,1); 
-    save('cats',state.cats); 
-    renderCats(); 
+  if(confirm('Delete "'+state.cats[i].name+'" and all its images?')){
+    const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxTtlqcabAigXoWs4-j23BSSbPV_7m4r-FGgYj25lNyibNxh9O6z8LMTDonTjWM1nQJ/exec';
+    fetch(SCRIPT_URL, {
+      method:'POST',
+      body:JSON.stringify({action:'deleteColumn', name:state.cats[i].name})
+    });
+    state.cats.splice(i,1);
+    save('cats',state.cats);
+    renderCats();
   }
 }
 function delCat(i){ deleteCat(i); }
@@ -1593,17 +1633,23 @@ function renderGallery(){
   });
   currentLightboxImgs=imgs;
 }
-function handleGalleryUpload(input){
+async function handleGalleryUpload(input){
   const files=Array.from(input.files);
-  files.forEach(file=>{
+  for(const file of files){
     const reader=new FileReader();
-    reader.onload=e=>{
-      if(!state.cats[currentCatIdx].images) state.cats[currentCatIdx].images=[];
-      state.cats[currentCatIdx].images.push(e.target.result);
-      save('cats',state.cats); renderGallery(); renderCats();
+    reader.onload=async e=>{
+      try{
+        const path = 'gallery/' + currentCatIdx + '/' + Date.now() + '_' + file.name;
+        const url = await window.uploadImageToStorage(e.target.result, path);
+        if(!state.cats[currentCatIdx].images) state.cats[currentCatIdx].images=[];
+        state.cats[currentCatIdx].images.push(url);
+        save('cats',state.cats); renderGallery(); renderCats();
+      } catch(err){
+        alert('Upload failed: ' + err.message);
+      }
     };
     reader.readAsDataURL(file);
-  });
+  }
   input.value='';
 }
 function delGalleryImg(j){
@@ -1874,9 +1920,16 @@ function applyCrop(){
   const dw=cropData.imgW*scale, dh=cropData.imgH*scale;
   ctx.drawImage(img,cropData.x,cropData.y,dw,dh);
   const dataURL=canvas.toDataURL('image/jpeg',0.85);
-  state.profileImg=dataURL; save('profileImg',dataURL);
-  renderProfileImg();
-  closeModal('cropModal');
+(async()=>{
+  try{
+    const url = await window.uploadImageToStorage(dataURL, 'profile/photo_' + Date.now() + '.jpg');
+    state.profileImg=url; save('profileImg',url);
+    renderProfileImg();
+    closeModal('cropModal');
+  } catch(err){
+    alert('Profile upload failed: '+err.message);
+  }
+})();
 }
 function renderProfileImg(){
   const cont=document.getElementById('profileImgContainer');

@@ -1559,24 +1559,18 @@ function saveCat(){
   };
   if(!obj.name) return;
 
-  const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxTtlqcabAigXoWs4-j23BSSbPV_7m4r-FGgYj25lNyibNxh9O6z8LMTDonTjWM1nQJ/exec';
+  const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxAvVDA-Wz0fqIb5BL4L0_nvClISkO9s9B1F6T4esHhQeWg73JcYRLu7zmkMSKTKFMK/exec';
 
   if(idx>=0){
-    // Edit — rename column in sheet
     const oldName=state.cats[idx].name;
     if(oldName !== obj.name){
-      fetch(SCRIPT_URL, {
-        method:'POST',
-        body:JSON.stringify({action:'renameColumn', oldName:oldName, newName:obj.name})
-      });
+      const url=`${SCRIPT_URL}?action=renameColumn&oldName=${encodeURIComponent(oldName)}&newName=${encodeURIComponent(obj.name)}`;
+      fetch(url);
     }
     state.cats[idx]=obj;
   } else {
-    // Add — new column in sheet
-    fetch(SCRIPT_URL, {
-      method:'POST',
-      body:JSON.stringify({action:'addColumn', name:obj.name})
-    });
+    const url=`${SCRIPT_URL}?action=addColumn&name=${encodeURIComponent(obj.name)}`;
+    fetch(url);
     state.cats.push(obj);
   }
 
@@ -1586,11 +1580,9 @@ function saveCat(){
 }
 function deleteCat(i){
   if(confirm('Delete "'+state.cats[i].name+'" and all its images?')){
-    const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxTtlqcabAigXoWs4-j23BSSbPV_7m4r-FGgYj25lNyibNxh9O6z8LMTDonTjWM1nQJ/exec';
-    fetch(SCRIPT_URL, {
-      method:'POST',
-      body:JSON.stringify({action:'deleteColumn', name:state.cats[i].name})
-    });
+    const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxAvVDA-Wz0fqIb5BL4L0_nvClISkO9s9B1F6T4esHhQeWg73JcYRLu7zmkMSKTKFMK/exec';
+    const url=`${SCRIPT_URL}?action=deleteColumn&name=${encodeURIComponent(state.cats[i].name)}`;
+    fetch(url);
     state.cats.splice(i,1);
     save('cats',state.cats);
     renderCats();

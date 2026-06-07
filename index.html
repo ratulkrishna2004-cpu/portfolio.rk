@@ -1014,8 +1014,8 @@ footer{
       <button class="gallery-close" onclick="closeGallery()">← Back</button>
       <div class="gallery-title" id="galleryTitle">Category</div>
     </div>
-    <button class="gallery-add-btn" onclick="document.getElementById('galleryUpload').click()">
-      ＋ Add Images
+    <button class="gallery-add-btn" onclick="openAddDesignModal()">
+      ＋ Add DESIGN
     </button>
     <button class="gallery-close" onclick="closeGallery()" style="margin-left:8px">✕</button>
   </div>
@@ -1222,7 +1222,17 @@ footer{
     </div>
   </div>
 </div>
-
+<div class="modal-overlay" id="addDesignModal">
+  <div class="modal">
+    <h2>➕ Add Design</h2>
+    <div class="modal-field"><label>Design Name</label><input type="text" id="addDesignName" placeholder="e.g. IEEE Poster 2024"/></div>
+    <div class="modal-field"><label>Google Drive Link</label><input type="text" id="addDesignUrl" placeholder="https://drive.google.com/..."/></div>
+    <div class="modal-actions">
+      <button class="btn-sm btn-cancel" onclick="closeModal('addDesignModal')">Cancel</button>
+      <button class="btn-sm btn-save" onclick="saveDesign()">Save</button>
+    </div>
+  </div>
+</div>
 <!-- ─── COPY TOAST ─── -->
 <div id="copyToast" style="
   position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
@@ -1604,41 +1614,38 @@ function renderGallery(){
     body.innerHTML='<div class="gallery-empty"><div class="gallery-empty-icon">🖼️</div><p>No designs yet</p><p style="font-size:.8rem;margin-top:8px">Admin mode: click "+ Add Images" to upload</p></div>';
     return;
   }
-  imgs.forEach((src,j)=>{
-    const wrap=document.createElement('div');
-    wrap.className='gallery-img-wrap';
-    wrap.innerHTML=`
-      <img src="${src}" alt="Design ${j+1}" onclick="openLightbox(${j})"/>
-      <button class="gallery-img-del" onclick="event.stopPropagation();delGalleryImg(${j})">✕</button>
-    `;
-    body.appendChild(wrap);
-  });
+  imgs.forEach((item,j)=>{
+  const isObj = typeof item==='object';
+  const name = isObj ? item.name : 'Design '+(j+1);
+  const url  = isObj ? item.url  : item;
+  const wrap=document.createElement('div');
+  wrap.className='gallery-img-wrap';
+  wrap.style.cssText='padding:20px 16px;display:flex;align-items:center;gap:12px;cursor:default;';
+  wrap.innerHTML=`
+    <div style="font-size:1.6rem">📄</div>
+    <div style="flex:1"><div style="font-weight:600;color:var(--text)">${name}</div>
+    <div style="font-size:.75rem;color:var(--text3)">Google Drive</div></div>
+    <a href="${url}" target="_blank" class="btn-outline" style="padding:6px 14px;font-size:.8rem">Open ↗</a>
+    <button class="gallery-img-del" onclick="event.stopPropagation();delGalleryImg(${j})">✕</button>
+  `;
+  body.appendChild(wrap);
+});
   currentLightboxImgs=imgs;
 }
-async function handleGalleryUpload(input){
-  const files=Array.from(input.files);
-  for(const file of files){
-    const reader=new FileReader();
-    reader.onload=async e=>{
-      try{
-        const base64=e.target.result.split(',')[1];
-        const formData=new FormData();
-        formData.append('image',base64);
-        const res=await fetch('https://api.imgbb.com/1/upload?key=YOUR_IMGBB_KEY',{method:'POST',body:formData});
-        const data=await res.json();
-        const url=data.data.url;
-        if(!state.cats[currentCatIdx].images) state.cats[currentCatIdx].images=[];
-        state.cats[currentCatIdx].images.push(url);
-        save('cats',state.cats); renderGallery(); renderCats();
-      }catch(err){
-        alert('Upload failed: '+err.message);
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-  input.value='';
+function openAddDesignModal(){
+  document.getElementById('addDesignName').value='';
+  document.getElementById('addDesignUrl').value='';
+  openModal('addDesignModal');
 }
-function delGalleryImg(j){
+function saveDesign(){
+  const name=document.getElementById('addDesignName').value.trim();
+  const url=document.getElementById('addDesignUrl').value.trim();
+  if(!name||!url){alert('দুইটা field fill করো');return;}
+  if(!state.cats[currentCatIdx].images) state.cats[currentCatIdx].images=[];
+  state.cats[currentCatIdx].images.push({name,url});
+  save('cats',state.cats); renderGallery(); renderCats();
+  closeModal('addDesignModal');
+}function delGalleryImg(j){
   setTimeout(()=>{
     if(confirm('Delete this image?')){
       state.cats[currentCatIdx].images.splice(j,1);
@@ -1839,9 +1846,17 @@ function openCropModal(){
   if(!isAdmin) return;
   openModal('cropModal');
 }
+function normalizeImageUrl(url){
+  url = url.replace(/https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/blob\/(.+)/, 
+    'https://raw.githubusercontent.com/$1/$2/$3');
+  const m = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if(m) url = 'https://drive.google.com/uc?export=view&id='+m[1];
+  return url;
+}
 function loadFromUrl(){
-  const url = document.getElementById('profileUrlInput').value.trim();
+  let url = document.getElementById('profileUrlInput').value.trim();
   if(!url) return;
+  url = normalizeImageUrl(url);
   const img = document.getElementById('cropImg');
   img.crossOrigin = 'anonymous';
   img.src = url;
@@ -1851,7 +1866,17 @@ function loadFromUrl(){
     document.getElementById('cropZoom').value=1;
     updateCrop();
   };
-  img.onerror = ()=>alert('Image load হয়নি। URL টা ঠিক আছে কিনা দেখো।');
+  img.onerror = ()=>{
+    img.crossOrigin = '';
+    img.src = url;
+    img.onload = ()=>{
+      cropData={x:0,y:0,scale:1,dragging:false,startX:0,startY:0,
+        imgW:img.naturalWidth,imgH:img.naturalHeight};
+      document.getElementById('cropZoom').value=1;
+      updateCrop();
+    };
+    img.onerror = ()=>alert('❌ Load হয়নি!\n\nকাজ করবে:\n• Imgur: i.imgur.com/xxx.jpg\n• imgbb direct link\n• raw.githubusercontent.com link');
+  };
 }
 function handleProfileUpload(input){
   const file=input.files[0];
@@ -1920,22 +1945,10 @@ function applyCrop(){
   const dw=cropData.imgW*scale, dh=cropData.imgH*scale;
   ctx.drawImage(img,cropData.x,cropData.y,dw,dh);
   const dataURL=canvas.toDataURL('image/jpeg',0.85);
-(async()=>{
-  try{
-    const base64=dataURL.split(',')[1];
-    const formData=new FormData();
-    formData.append('image',base64);
-    const res=await fetch('https://api.imgbb.com/1/upload?key=YOUR_IMGBB_KEY',{method:'POST',body:formData});
-    const data=await res.json();
-    const url=data.data.url;
-    state.profileImg=dataURL; 
-save('profileImg',dataURL);
+state.profileImg = dataURL;
+save('profileImg', dataURL);
 renderProfileImg();
 closeModal('cropModal');
-} catch(err){
-    alert('Profile upload failed: '+err.message);
-  }
-})();
   
 }
 function renderProfileImg(){

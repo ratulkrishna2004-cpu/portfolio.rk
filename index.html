@@ -950,25 +950,7 @@ footer{
 <div class="page" id="page-research">
   <div class="section">
     <div class="section-title">Research</div>
-    <div class="research-grid" id="researchGrid">
-      <div class="research-card glass-glow">
-        <div style="display:flex;justify-content:space-between;align-items:start;gap:16px">
-          <div>
-            <h3>Champion – CS Congress Research Paper</h3>
-            <p>Research paper presented at CS Congress. Won Champion award recognizing academic excellence in computer science research.</p>
-            <div class="research-meta">
-              <span class="research-tag">🏆 Champion</span>
-              <span class="research-tag">2020</span>
-              <span class="research-tag">CS Congress</span>
-            </div>
-          </div>
-          <div style="display:flex;gap:4px;flex-shrink:0">
-            <button class="edit-btn" onclick="editResearch(0)"><span class="iconify" data-icon="ph:pencil-simple"></span></button>
-            <button class="del-btn" onclick="delResearch(0)"><span class="iconify" data-icon="ph:trash"></span></button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="research-grid" id="researchGrid"></div>
     <button class="add-btn" onclick="openAddResearch()">
       <span class="iconify" data-icon="ph:plus-circle"></span> Add Research
     </button>
@@ -1366,6 +1348,7 @@ function checkAdminPass(){
   const v = document.getElementById('adminPassInput').value;
   if(v === ADMIN_PASS){
     isAdmin = true;
+localStorage.setItem('rkm_admin', '1');
     document.body.classList.add('admin-mode');
     document.getElementById('adminBtn').classList.add('active');
     document.getElementById('adminBtnTxt').textContent = 'Exit Admin';
@@ -1378,6 +1361,7 @@ function checkAdminPass(){
 }
 function logoutAdmin(){
   isAdmin = false;
+localStorage.removeItem('rkm_admin');
   document.body.classList.remove('admin-mode');
   document.getElementById('adminBtn').classList.remove('active');
   document.getElementById('adminBtnTxt').textContent = 'Admin';
@@ -2183,6 +2167,12 @@ function openAwardIconPicker(){
 }
 
 function init(){
+if(localStorage.getItem('rkm_admin') === '1'){
+  isAdmin = true;
+  document.body.classList.add('admin-mode');
+  document.getElementById('adminBtn').classList.add('active');
+  document.getElementById('adminBtnTxt').textContent = 'Exit Admin';
+}
   renderAwards();
   renderEdu();
   renderCats();

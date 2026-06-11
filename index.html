@@ -3,25 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ratul Krishna Mojumder | Portfolio & CMS</title>
+    <title>Ratul Krishna Mojumder | EEE & Design Studio Portfolio</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <style>
-        /* === SYSTEM & THEME CONFIGURATION === */
         :root {
-            --bg-dark: #06020f;
-            --neon-purple: #b026ff;
-            --neon-glow: rgba(176, 38, 255, 0.4);
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-card: rgba(15, 7, 32, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f3f1f6;
-            --text-muted: #a39eb0;
+            --bg-deep: #030108;
+            --neon-electric: #b026ff;
+            --neon-spark-glow: rgba(176, 38, 255, 0.55);
+            --glass-backdrop: rgba(15, 8, 32, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --text-neon: #f1ecf7;
+            --text-dim: #8b8599;
         }
 
         * {
@@ -32,354 +30,428 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-neon);
             overflow-x: hidden;
             line-height: 1.6;
         }
 
-        /* === NAVIGATION & RESPONSIVE HAMBURGER === */
+        /* === ELECTRICAL GLOSSY GLOW NAVIGATION === */
         nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
+            top: 0; left: 0; width: 100%;
+            z-index: 999;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
-            background: rgba(6, 2, 15, 0.85);
-            backdrop-filter: blur(12px);
+            padding: 20px 6%;
+            background: rgba(3, 1, 8, 0.85);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
         }
 
-        .logo {
+        .studio-brand {
+            font-family: 'Orbitron', sans-serif;
             font-size: 24px;
-            font-weight: 800;
+            font-weight: 900;
+            letter-spacing: 2px;
             color: #fff;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px var(--neon-glow);
+            text-shadow: 0 0 10px var(--neon-spark-glow);
         }
+        .studio-brand span { color: var(--neon-electric); }
 
-        .logo span { color: var(--neon-purple); }
-
-        .nav-links {
+        .desktop-routing-links {
             display: flex;
             list-style: none;
-            gap: 30px;
+            gap: 35px;
             align-items: center;
         }
-
-        .nav-links a {
-            color: var(--text-muted);
+        .desktop-routing-links a {
+            color: var(--text-dim);
             text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .desktop-routing-links a:hover {
+            color: var(--neon-electric);
+            text-shadow: 0 0 12px var(--neon-electric);
         }
 
-        .nav-links a:hover {
-            color: var(--neon-purple);
-            text-shadow: 0 0 8px var(--neon-purple);
-        }
-
-        .hamburger {
+        /* === INTERACTIVE PHONE NAVIGATION OVERLAY SCREEN === */
+        .hamburger-trigger-node {
             display: none;
             cursor: pointer;
-            font-size: 24px;
-            color: var(--text-main);
-            transition: color 0.3s;
+            font-size: 26px;
+            color: #fff;
+            transition: transform 0.3s ease;
         }
+        .hamburger-trigger-node:hover { color: var(--neon-electric); }
 
-        .hamburger:hover { color: var(--neon-purple); }
+        .phone-overlay-fullscreen-menu {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(3, 1, 8, 0.98);
+            backdrop-filter: blur(25px);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .phone-overlay-fullscreen-menu.active-view {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .phone-overlay-fullscreen-menu a {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            color: var(--text-neon);
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        .phone-overlay-fullscreen-menu a:hover {
+            color: var(--neon-electric);
+            text-shadow: 0 0 15px var(--neon-electric);
+        }
+        .exit-overlay-trigger {
+            position: absolute;
+            top: 30px; right: 40px;
+            font-size: 35px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .exit-overlay-trigger:hover { transform: rotate(90deg); color: var(--neon-electric); }
 
-        /* === GLOSSY NEON GRAPHIC DESIGN UI ELEMENTS === */
-        .glossy-btn {
-            background: var(--glass-bg);
+        /* === GLOSSY GLOW GLASS CARDS CIRCUITRY AESTHETIC === */
+        .glossy-neon-action-trigger {
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--glass-border);
             color: #fff;
-            padding: 12px 28px;
-            border-radius: 50px;
+            padding: 12px 30px;
+            border-radius: 40px;
             cursor: pointer;
-            font-weight: 600;
-            backdrop-filter: blur(8px);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-decoration: none;
         }
-
-        .glossy-btn:hover {
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 25px var(--neon-glow);
-            transform: translateY(-2px);
+        .glossy-neon-action-trigger:hover {
+            border-color: var(--neon-electric);
+            box-shadow: 0 0 30px var(--neon-spark-glow), inset 0 0 10px var(--neon-spark-glow);
+            transform: translateY(-3px);
             text-shadow: 0 0 5px #fff;
         }
 
-        .section-container {
-            max-width: 1100px;
+        .circuit-section-wrapper {
+            max-width: 1140px;
             margin: 0 auto;
-            padding: 100px 20px 40px 20px;
+            padding: 120px 24px 40px 24px;
         }
 
-        .section-title {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 40px;
+        .glowing-vector-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 50px;
             text-align: left;
-            position: relative;
-            display: inline-block;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #fff, var(--neon-electric));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 50px;
-            height: 4px;
-            background: var(--neon-purple);
-            box-shadow: 0 0 10px var(--neon-purple);
-            border-radius: 2px;
-        }
-
-        /* Glass Cards with Touch / Hover Ignition Ignition Glow */
-        .glass-card {
-            background: var(--glass-card);
+        .glassmorphic-node-card {
+            background: var(--glass-backdrop);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s ease;
-            text-align: left;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(15px);
             position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-align: left;
+        }
+        /* Touch/Mouse Spark Ignition Effect */
+        .glassmorphic-node-card:hover {
+            border-color: rgba(176, 38, 255, 0.5);
+            box-shadow: 0 0 40px rgba(176, 38, 255, 0.25), inset 0 0 15px rgba(176, 38, 255, 0.1);
+            transform: scale(1.01) translateY(-2px);
         }
 
-        .glass-card:hover {
-            border-color: rgba(176, 38, 255, 0.4);
-            box-shadow: 0 0 30px rgba(176, 38, 255, 0.15), inset 0 0 15px rgba(176, 38, 255, 0.05);
-            transform: translateY(-4px);
-        }
-
-        /* === HERO SECTION & PROFILE CONTROL === */
-        .hero {
+        /* === STUDIO HERO SECTION WITH DRAGGABLE AVATAR CONFIGURATION === */
+        .studio-hero-canvas {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding-top: 100px;
-            background: radial-gradient(circle at center, rgba(30,10,60,0.4) 0%, var(--bg-dark) 70%);
+            background: radial-gradient(circle at center, rgba(22, 9, 43, 0.6) 0%, var(--bg-deep) 75%);
+            padding-top: 120px;
         }
 
-        .avatar-wrapper {
-            position: relative;
-            width: 180px;
-            height: 180px;
+        .avatar-frame-container {
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
-            padding: 5px;
-            background: linear-gradient(135deg, var(--glass-border), var(--neon-purple));
-            box-shadow: 0 0 30px var(--neon-glow);
-            margin-bottom: 30px;
+            padding: 6px;
+            background: linear-gradient(135deg, var(--glass-border), var(--neon-electric), var(--bg-deep));
+            box-shadow: 0 0 40px var(--neon-spark-glow);
+            margin-bottom: 35px;
+            overflow: hidden;
+            position: relative;
         }
-
-        .avatar-wrapper img {
+        .avatar-frame-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
             border-radius: 50%;
-            background: #111;
+            background: #090514;
+            transition: transform 0.1s ease;
         }
 
-        .hero h1 {
-            font-size: 56px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-        }
-
-        .hero p {
-            color: var(--text-muted);
-            font-size: 18px;
-            margin-bottom: 35px;
-            max-width: 600px;
-        }
-
-        /* === CMS DYNAMIC SECTIONS === */
-        .item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .item-meta { text-align: right; color: var(--neon-purple); font-weight: 600; }
-        
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        .skill-tag {
-            display: inline-block;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            padding: 6px 14px;
-            border-radius: 20px;
-            margin: 5px;
-            font-size: 14px;
-        }
-
-        /* === ADMIN PANEL ENGINE === */
-        .admin-action-block {
-            display: none;
-            margin-bottom: 25px;
-            background: rgba(176, 38, 255, 0.05);
-            border: 1px dashed var(--neon-purple);
-            padding: 20px;
-            border-radius: 12px;
+        /* === INTEGRATED DYNAMIC ENGINE CMS PANELS === */
+        .admin-cms-control-panel {
+            display: none; /* Persistent State Authentication Switch */
+            background: rgba(176, 38, 255, 0.04);
+            border: 2px dashed var(--neon-electric);
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 30px;
             text-align: left;
+            animation: circuitPulse 3s infinite alternate;
         }
-        .admin-action-block input, .admin-action-block select {
-            background: rgba(0,0,0,0.4);
+        @keyframes circuitPulse {
+            0% { box-shadow: 0 0 10px rgba(176, 38, 255, 0.1); }
+            100% { box-shadow: 0 0 25px rgba(176, 38, 255, 0.3); }
+        }
+
+        .admin-cms-control-panel input, .admin-cms-control-panel select {
+            background: rgba(5, 2, 12, 0.85);
             border: 1px solid var(--glass-border);
             color: #fff;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin: 8px 10px 8px 0;
+            padding: 12px 18px;
+            border-radius: 10px;
+            margin: 8px 12px 8px 0;
             font-family: inherit;
+            font-size: 14px;
         }
-        .admin-action-block input:focus { border-color: var(--neon-purple); outline: none; }
-        .admin-btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .danger-btn { background: rgba(255, 50, 50, 0.2); border-color: rgba(255, 50, 50, 0.4); }
-        .danger-btn:hover { border-color: rgb(255, 50, 50); box-shadow: 0 0 15px rgba(255, 50, 50, 0.3); }
+        .admin-cms-control-panel input:focus { border-color: var(--neon-electric); outline: none; box-shadow: 0 0 10px var(--neon-spark-glow); }
+        
+        .cms-inline-delete-trigger {
+            background: rgba(255, 70, 70, 0.15);
+            border: 1px solid rgba(255, 70, 70, 0.3);
+            color: #ff5555;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .cms-inline-delete-trigger:hover { background: #ff3333; color: #fff; box-shadow: 0 0 15px rgba(255,51,51,0.4); }
 
-        /* === RESPONSIVE VIEWS === */
-        @media (max-width: 768px) {
-            .nav-links {
-                position: fixed;
-                top: 73px;
-                right: -100%;
-                width: 250px;
-                height: calc(100vh - 73px);
-                background: rgba(10, 5, 23, 0.98);
-                flex-direction: column;
-                padding: 40px 20px;
-                align-items: flex-start;
-                border-left: 1px solid var(--glass-border);
-                transition: right 0.4s ease;
-            }
-            .nav-links.active { right: 0; }
-            .hamburger { display: block; }
-            .hero h1 { font-size: 38px; }
-            .item-row { flex-direction: column; }
-            .item-meta { text-align: left; margin-top: 8px; }
+        .skills-matrix-cluster {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        .interactive-skill-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            border-radius: 30px;
+            margin: 6px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Helper Search Tool for Icons */
+        .icon-search-datalist-helper {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 4px;
+            display: block;
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">RATUL<span>.</span></div>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#home" onclick="closeMenu()">Home</a></li>
-            <li><a href="#education" onclick="closeMenu()">Education</a></li>
-            <li><a href="#awards" onclick="closeMenu()">Awards</a></li>
-            <li><a href="#skills" onclick="closeMenu()">Skills</a></li>
-            <li><a href="#designs" onclick="closeMenu()">Designs</a></li>
-            <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
-            <li><button class="glossy-btn" id="adminLockBtn" onclick="handleAdminSystem()"><i class="fas fa-lock"></i> Admin</button></li>
+        <div class="studio-brand">RATUL<span>.</span>STUDIO</div>
+        <ul class="desktop-routing-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#awards">Awards</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#designs">Designs</a></li>
+            <li><a href="#cv-vault">CV Engine</a></li>
+            <li><a href="#contact-channels">Contact</a></li>
+            <li><button class="glossy-neon-action-trigger" id="masterAuthSystemBtn" onclick="triggerSystemAuthentication()"><i class="fas fa-lock"></i> System Admin</button></li>
         </ul>
-        <div class="hamburger" onclick="toggleMobileMenu()">
-            <i class="fas fa-bars" id="menuIcon"></i>
+        <div class="hamburger-trigger-node" onclick="openInteractivePhoneMenu()">
+            <i class="fas fa-bars"></i>
         </div>
     </nav>
 
-    <section id="home" class="hero">
-        <div class="avatar-wrapper">
-            <img id="displayAvatar" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500" alt="Profile">
+    <div class="phone-overlay-fullscreen-menu" id="mobileOverlayMenuContainer">
+        <div class="exit-overlay-trigger" onclick="closeInteractivePhoneMenu()"><i class="fas fa-times"></i></div>
+        <a href="#home" onclick="closeInteractivePhoneMenu()">Home</a>
+        <a href="#education" onclick="closeInteractivePhoneMenu()">Education</a>
+        <a href="#awards" onclick="closeInteractivePhoneMenu()">Awards</a>
+        <a href="#skills" onclick="closeInteractivePhoneMenu()">Skills</a>
+        <a href="#designs" onclick="closeInteractivePhoneMenu()">Designs</a>
+        <a href="#cv-vault" onclick="closeInteractivePhoneMenu()">CV Vault</a>
+        <a href="#contact-channels" onclick="closeInteractivePhoneMenu()">Contact</a>
+    </div>
+
+    <section id="home" class="studio-hero-canvas">
+        <div class="avatar-frame-container">
+            <img id="runtimeAvatarNode" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500" alt="Ratul Krishna Mojumder">
         </div>
+
+        <div class="admin-cms-control-panel" id="avatarConfigCmsPanel" style="width: 90%; max-width: 500px; text-align: center;">
+            <h4 style="margin-bottom:12px; font-family:'Orbitron'"><i class="fas fa-crop-alt"></i> Fitting Pixels Frame Sync</h4>
+            <input type="text" id="rawGithubLinkField" placeholder="Paste GitHub Image Raw Address URL..." style="width: 100%; margin-bottom: 15px;">
+            
+            <div style="margin: 10px 0; text-align: left;">
+                <label style="font-size:12px; color:var(--text-dim)">Zoom Scale Matrix Selector:</label>
+                <input type="range" id="zoomSliderNode" min="1" max="3" step="0.05" value="1" style="width:100%" oninput="applyLiveAvatarTransforms()">
+            </div>
+            <div style="margin: 10px 0; text-align: left;">
+                <label style="font-size:12px; color:var(--text-dim)">Horizontal Offset Alignment (X):</label>
+                <input type="range" id="panXSliderNode" min="0" max="100" step="1" value="50" style="width:100%" oninput="applyLiveAvatarTransforms()">
+            </div>
+            <div style="margin: 10px 0; text-align: left;">
+                <label style="font-size:12px; color:var(--text-dim)">Vertical Offset Alignment (Y):</label>
+                <input type="range" id="panYSliderNode" min="0" max="100" step="1" value="50" style="width:100%" oninput="applyLiveAvatarTransforms()">
+            </div>
+            <button class="glossy-neon-action-trigger" style="margin-top:15px; width:100%; justify-content:center;" onclick="commitAvatarTransformPayload()">Lock Frame Settings</button>
+        </div>
+
+        <h1 style="font-family:'Orbitron'; font-size: 52px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px;">Ratul Krishna Mojumder</h1>
+        <p style="color: var(--text-dim); font-size: 19px; max-width: 650px; margin-bottom: 40px; font-weight: 500;">⚡ Electrical & Electronic Engineer [cite: 5] · Creative Graphics Designer [cite: 6]</p>
         
-        <div class="admin-action-block" id="profileAdminBlock" style="width:90%; max-width:500px; text-align:center;">
-            <h4>Update Image Link (GitHub Raw Url)</h4>
-            <input type="text" id="avatarInputUrl" placeholder="Paste raw github address..." style="width:100%;">
-            <button class="glossy-btn" onclick="saveProfilePic()">Save Picture</button>
-        </div>
-
-        <h1 id="profileName">Ratul Krishna Mojumder</h1>
-        <p id="profileTagline">⚡ EEE Student · Graphics Designer · Researcher</p>
-        
-        <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center;">
-            <a href="#designs" class="glossy-btn"><i class="fas fa-palette"></i> View Designs</a>
-            <a id="cvExternalLink" href="https://drive.google.com/file/d/1gAzA8MhB3u5zDfUSCMtMANk3hZlVgp0K/view?usp=sharing" target="_blank" class="glossy-btn"><i class="fas fa-file-pdf"></i> View & Download CV</a>
+        <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+            <a href="#designs" class="glossy-neon-action-trigger"><i class="fas fa-bezier-curve"></i> View Design Studio</a>
+            <a href="#cv-vault" class="glossy-neon-action-trigger"><i class="fas fa-file-invoice"></i> Access CV Deck</a>
         </div>
     </section>
 
-    <section id="education" class="section-container">
-        <h2 class="section-title">Educational Background</h2>
-        <div class="admin-action-block" id="eduAdminBlock">
-            <h4>Add Educational Qualification</h4>
-            <input type="text" id="eduInst" placeholder="Institution (e.g. AUST)">
-            <input type="text" id="eduDeg" placeholder="Degree/Certificate">
-            <input type="text" id="eduYear" placeholder="Year Range (e.g. 2024-Present)">
-            <button class="glossy-btn" onclick="createNewEducation()">Insert Record</button>
+    <section id="education" class="circuit-section-wrapper">
+        <h2 class="glowing-vector-title">Educational Matrix</h2>
+        <div class="admin-cms-control-panel" id="educationCmsPanel">
+            <h4><i class="fas fa-plus"></i> Add Institution Log Node</h4>
+            <input type="text" id="eduInstField" placeholder="Institution Name (e.g., AUST)">
+            <input type="text" id="eduDegreeField" placeholder="Degree/Concentration Track">
+            <input type="text" id="eduTimelineField" placeholder="Year Range (e.g., 2024-Present)">
+            <button class="glossy-neon-action-trigger" onclick="pushEducationNode()">Insert Database Record</button>
         </div>
-        <div id="educationDynamicContainer"></div>
+        <div id="runtimeEducationTarget"></div>
     </section>
 
-    <section id="awards" class="section-container">
-        <h2 class="section-title">Awards & Achievements</h2>
-        <div class="admin-action-block" id="awardAdminBlock">
-            <h4>Add New Award Element</h4>
-            <input type="text" id="awardTitle" placeholder="Award Achievement Title">
-            <input type="text" id="awardYear" placeholder="Year / Category Tag">
-            <input type="text" id="awardIcon" placeholder="FontAwesome Icon (e.g., fas fa-trophy)">
-            <button class="glossy-btn" onclick="createNewAward()">Insert Award</button>
+    <section id="awards" class="circuit-section-wrapper">
+        <h2 class="glowing-vector-title">Honors & Achievements</h2>
+        <div class="admin-cms-control-panel" id="awardsCmsPanel">
+            <h4><i class="fas fa-plus"></i> Append Honor Node</h4>
+            <input type="text" id="awardTitleField" placeholder="Achievement Title Heading">
+            <input type="text" id="awardYearField" placeholder="Timeline Year / Indexing Tag">
+            <input type="text" id="awardIconField" list="faIconDatalist" placeholder="Search/Type FontAwesome Class (e.g., fas fa-trophy)">
+            <span class="icon-search-datalist-helper">💡 Search Filter Tool Active: Datalist automatic parameters configured for match profiles.</span>
+            <button class="glossy-neon-action-trigger" style="margin-top:12px;" onclick="pushAwardNode()">Insert Vault Asset</button>
         </div>
-        <div id="awardsDynamicContainer"></div>
+        <div id="runtimeAwardsTarget"></div>
     </section>
 
-    <section id="skills" class="section-container">
-        <h2 class="section-title">Technical Skills Matrix</h2>
-        <div class="admin-action-block" id="skillsAdminBlock">
-            <h4>Add Technical Skill Item</h4>
-            <select id="skillCategorySelect">
-                <option value="Programming">Programming</option>
-                <option value="Software Engine">Engineering Software & Tools</option>
-                <option value="Graphics Design">Design & Creative Layouts</option>
+    <section id="skills" class="circuit-section-wrapper">
+        <h2 class="glowing-vector-title">Technical Capabilities</h2>
+        <div class="admin-cms-control-panel" id="skillsCmsPanel">
+            <h4><i class="fas fa-plus"></i> Insert Engine Skillset Node</h4>
+            <select id="skillCategorySelectorNode">
+                <option value="Programming Matrix">Programming Languages</option>
+                <option value="Engineering Systems">Engineering Simulation & Cad Packages</option>
+                <option value="Creative Suites">Creative Graphic Layout Suites</option>
             </select>
-            <input type="text" id="skillItemName" placeholder="Skill Name (e.g., Quartus II)">
-            <button class="glossy-btn" onclick="createNewSkill()">Insert Skill</button>
+            <input type="text" id="skillNameStringField" placeholder="Skill Identifier String (e.g., Quartus II)">
+            <button class="glossy-neon-action-trigger" onclick="pushSkillNode()">Map Skill Entity</button>
         </div>
-        <div class="skills-grid" id="skillsDynamicContainer"></div>
+        <div class="skills-matrix-cluster" id="runtimeSkillsTarget"></div>
     </section>
 
-    <section id="designs" class="section-container">
-        <h2 class="section-title">Creative Designs Showcase</h2>
-        <div class="admin-action-block" id="designAdminBlock">
-            <h4>Add New Creative Project Asset</h4>
-            <input type="text" id="designProjectName" placeholder="Project / Asset Name">
-            <input type="text" id="designDriveLink" placeholder="Google Drive Link">
-            <button class="glossy-btn" onclick="createNewDesignAsset()">Insert Asset</button>
+    <section id="designs" class="circuit-section-wrapper">
+        <h2 class="glowing-vector-title">Creative Vector Space</h2>
+        <div class="admin-cms-control-panel" id="designsCmsPanel">
+            <h4><i class="fas fa-plus"></i> Launch New Design Node Folder</h4>
+            <input type="text" id="designProjectTitleField" placeholder="Design Showcase Name">
+            <input type="text" id="designDriveUrlField" placeholder="Secure Cloud Drive Address link">
+            <button class="glossy-neon-action-trigger" onclick="pushDesignNode()">Deploy Portfolio Element</button>
         </div>
-        <div id="designsDynamicContainer" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;"></div>
+        <div id="runtimeDesignsTarget" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap:25px;"></div>
     </section>
 
-    <section id="contact" class="section-container" style="margin-bottom:100px;">
-        <h2 class="section-title">Let's Connect</h2>
-        <div class="admin-action-block" id="contactAdminBlock">
-            <h4>Add New Contact Portal</h4>
-            <input type="text" id="contactPlatform" placeholder="Platform Name (e.g. WhatsApp)">
-            <input type="text" id="contactValue" placeholder="Target Endpoint/Link">
-            <input type="text" id="contactIcon" placeholder="FontAwesome Code (e.g. fab fa-whatsapp)">
-            <button class="glossy-btn" onclick="createNewContactCard()">Insert Gateway</button>
+    <section id="cv-vault" class="circuit-section-wrapper">
+        <h2 class="glowing-vector-title">Curriculum Vitae Repository</h2>
+        <div class="admin-cms-control-panel" id="cvCmsPanel" style="max-width: 500px;">
+            <h4><i class="fas fa-link"></i> Update CV Storage Address</h4>
+            <input type="text" id="cvDriveAddressField" placeholder="Google Drive Shared Address Link..." style="width: 100%;">
+            <button class="glossy-neon-action-trigger" style="margin-top:12px;" onclick="commitCvTargetLink()">Update Target Link</button>
         </div>
-        <div id="contactDynamicContainer" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:20px;"></div>
+        
+        <div class="glassmorphic-node-card" style="text-align: center; padding: 50px 20px;">
+            <i class="fas fa-file-pdf" style="font-size: 65px; color: var(--neon-electric); margin-bottom: 25px; text-shadow: 0 0 20px var(--neon-spark-glow)"></i>
+            <h3 style="margin-bottom: 12px; font-family:'Orbitron'">Verified Asset Directory File</h3>
+            <p style="color: var(--text-dim); margin-bottom: 35px;">Real-time validated structural resume asset file linked securely via Google Cloud Framework integration.</p>
+            
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <a id="uiActionViewCvBtn" href="#" target="_blank" class="glossy-neon-action-trigger"><i class="fas fa-eye"></i> View Workspace</a>
+                <a id="uiActionDownloadCvBtn" href="#" target="_blank" class="glossy-neon-action-trigger"><i class="fas fa-cloud-download-alt"></i> Instant Download File</a>
+            </div>
+        </div>
     </section>
+
+    <section id="contact-channels" class="circuit-section-wrapper" style="margin-bottom: 150px;">
+        <h2 class="glowing-vector-title">Communication Portals</h2>
+        <div class="admin-cms-control-panel" id="contactCmsPanel">
+            <h4><i class="fas fa-plus"></i> Open Gateway Interface Channel</h4>
+            <input type="text" id="contactPlatformNameField" placeholder="Portal Gateway Target (e.g., LinkedIn)">
+            <input type="text" id="contactTargetEndpointField" placeholder="URL Address Context String">
+            <input type="text" id="contactPlatformIconField" list="faIconDatalist" placeholder="FA Class Code (e.g., fab fa-linkedin)">
+            <button class="glossy-neon-action-trigger" onclick="pushContactGatewayNode()">Deploy Communications Node</button>
+        </div>
+        <div id="runtimeContactTarget" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:25px;"></div>
+    </section>
+
+    <datalist id="faIconDatalist">
+        <option value="fas fa-trophy">Trophy Gold</option>
+        <option value="fas fa-medal">Medal Core Achievement</option>
+        <option value="fas fa-rocket">Rocket Propulsion Carnival</option>
+        <option value="fas fa-graduation-cap">Academic Cap Varsity</option>
+        <option value="fas fa-microchip">EEE Microchip Processing</option>
+        <option value="fas fa-palette">Design Studio Interface</option>
+        <option value="fab fa-github">GitHub Repository Module</option>
+        <option value="fab fa-linkedin">LinkedIn Professional Networking</option>
+        <option value="fas fa-envelope">Secure Electronic Mail Portal</option>
+        <option value="fab fa-whatsapp">WhatsApp Instant Messaging Gateway</option>
+        <option value="fas fa-phone-alt">Voice Audio Terminal Connection</option>
+        <option value="fas fa-award">Generic Honor Node Block</option>
+        <option value="fas fa-bolt">Electrical Circuit Energy Token</option>
+    </datalist>
 
     <script>
-        /* === APPLICATION FIREBASE CORE INSTANTIATION === */
+        /* === APPLICATION DATABASE PARAMETERS === */
         const firebaseConfig = {
             apiKey: "AIzaSyAGBsipDr6skfsvDrYHHCe7CK9AWcCt-dA",
             authDomain: "portfolio-rk-41348.firebaseapp.com",
@@ -394,273 +466,312 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let adminAuthenticationState = false;
+        let sessionAdministrationActiveToken = false;
 
-        /* === APP CORE INITIALIZATION LOGIC === */
+        /* === LIFECYCLE CONTROLLER RECOVERY === */
         window.onload = () => {
-            // Restore persistent login if present
-            if (localStorage.getItem('rkPortfolioAdminSession') === 'activeToken092418') {
-                adminAuthenticationState = true;
-                activateAdminUILayouts();
+            if (localStorage.getItem('rkPersistentStudioTokenSecure') === 'verifiedAuth092418') {
+                sessionAdministrationActiveToken = true;
+                igniteAdministrativeCMSLayouts();
             }
-            verifyAndPopulateDatabaseDefaults();
-            initializeRealtimeDataStreams();
+            evaluateBaselineDatabaseIntegrity();
+            igniteRealtimeDatabaseSyncStreams();
         };
 
-        /* === MOBILE MENU ROUTING CONTROLS === */
-        function toggleMobileMenu() {
-            const links = document.getElementById('navLinks');
-            const icon = document.getElementById('menuIcon');
-            links.classList.toggle('active');
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
+        /* === MOBILE OVERLAY SCREEN NAVIGATION TRIGGERS === */
+        function openInteractivePhoneMenu() {
+            document.getElementById('mobileOverlayMenuContainer').classList.add('active-view');
+        }
+        function closeInteractivePhoneMenu() {
+            document.getElementById('mobileOverlayMenuContainer').classList.remove('active-view');
         }
 
-        function closeMenu() {
-            document.getElementById('navLinks').classList.remove('active');
-            const icon = document.getElementById('menuIcon');
-            icon.addClassList = 'fas fa-bars';
-        }
-
-        /* === AUTHENTICATION LOGIC CHAIN === */
-        function handleAdminSystem() {
-            if (adminAuthenticationState) {
-                if (confirm("Do you want to sign out of the Admin Control System?")) {
-                    localStorage.removeItem('rkPortfolioAdminSession');
+        /* === PERSISTENT USER AUTHENTICATION PIPELINE === */
+        function triggerSystemAuthentication() {
+            if (sessionAdministrationActiveToken) {
+                if (confirm("Confirm system access command: Terminate active secure admin logging state?")) {
+                    localStorage.removeItem('rkPersistentStudioTokenSecure');
                     location.reload();
                 }
             } else {
-                const securityKey = prompt("Enter Administration Key:");
-                if (securityKey === "092418") {
-                    adminAuthenticationState = true;
-                    localStorage.setItem('rkPortfolioAdminSession', 'activeToken092418');
-                    alert("System Verification Cleared. Administrative privileges active.");
-                    activateAdminUILayouts();
-                    initializeRealtimeDataStreams(); // Redraw with CRUD tools
+                const credentialVector = prompt("Provide Secure Verification Clearance Passkey:");
+                if (credentialVector === "092418") {
+                    sessionAdministrationActiveToken = true;
+                    localStorage.setItem('rkPersistentStudioTokenSecure', 'verifiedAuth092418');
+                    alert("Authorization Cleared. Persistent session token locked.");
+                    igniteAdministrativeCMSLayouts();
+                    igniteRealtimeDatabaseSyncStreams();
                 } else {
-                    alert("System verification failed. Request dropped.");
+                    alert("Access verification checkpoint failure. Connection vector dropped.");
                 }
             }
         }
 
-        function activateAdminUILayouts() {
-            document.querySelectorAll('.admin-action-block').forEach(panel => panel.style.display = 'block');
-            const lockBtn = document.getElementById('adminLockBtn');
-            lockBtn.innerHTML = '<i class="fas fa-lock-open" style="color:var(--neon-purple)"></i> Logout';
-            lockBtn.style.borderColor = 'var(--neon-purple)';
+        function igniteAdministrativeCMSLayouts() {
+            document.querySelectorAll('.admin-cms-control-panel').forEach(block => block.style.display = 'block');
+            const targetBtn = document.getElementById('masterAuthSystemBtn');
+            targetBtn.innerHTML = '<i class="fas fa-lock-open" style="color:var(--neon-electric)"></i> Exit Workspace';
+            targetBtn.style.borderColor = 'var(--neon-electric)';
+            targetBtn.style.boxShadow = '0 0 20px var(--neon-spark-glow)';
         }
 
-        /* === AUTO CORE RECONVERSION DATA INJECTOR === */
-        function verifyAndPopulateDatabaseDefaults() {
-            db.ref('education').once('value', snapshot => {
-                if (!snapshot.exists()) {
-                    // Populate initial baseline items from provided CV 
+        /* === PROFILE IMAGING DYNAMIC COORDINATE PROCESSORS === */
+        function applyLiveAvatarTransforms() {
+            const z = document.getElementById('zoomSliderNode').value;
+            const x = document.getElementById('panXSliderNode').value;
+            const y = document.getElementById('panYSliderNode').value;
+            
+            const node = document.getElementById('runtimeAvatarNode');
+            node.style.transform = `scale(${z})`;
+            node.style.objectPosition = `${x}% ${y}%`;
+        }
+
+        function commitAvatarTransformPayload() {
+            const link = document.getElementById('rawGithubLinkField').value;
+            const z = document.getElementById('zoomSliderNode').value;
+            const x = document.getElementById('panXSliderNode').value;
+            const y = document.getElementById('panYSliderNode').value;
+
+            const updateMap = { zoom: z, posX: x, posY: y };
+            if (link) updateMap.url = link;
+
+            db.ref('profile/avatarConfig').update(updateMap, err => {
+                if(!err) alert("Image geometry coordinate transformation payload synchronized.");
+            });
+        }
+
+        /* === TRACK-DATA INJECTOR AUTOMATED BASELINE GENERATOR === */
+        function evaluateBaselineDatabaseIntegrity() {
+            db.ref('cvLink').once('value', snapshot => {
+                if(!snapshot.exists()) db.ref('cvLink').set("https://drive.google.com/file/d/1gAzA8MhB3u5zDfUSCMtMANk3hZlVgp0K/view?usp=sharing");
+            });
+
+            db.ref('education').once('value', snap => {
+                if(!snap.exists()) {
                     db.ref('education').push({ inst: "Ahsanullah University of Science & Technology (AUST)", deg: "B.Sc. in Electrical and Electronic Engineering (EEE)", year: "2024-Present" }); [cite: 9, 10, 11]
                     db.ref('education').push({ inst: "Notre Dame College, Dhaka", deg: "Higher Secondary Certificate (HSC) | GPA: 5.00", year: "2023" }); [cite: 12, 13]
                     db.ref('education').push({ inst: "Narayanganj Ideal School", deg: "Secondary School Certificate (SSC) | GPA: 5.00", year: "2021" }); [cite: 14, 15]
                 }
             });
-            db.ref('awards').once('value', snapshot => {
-                if(!snapshot.exists()) {
+
+            db.ref('awards').once('value', snap => {
+                if(!snap.exists()) {
                     db.ref('awards').push({ title: "Champion - CS Congress Research Paper", year: "2020", icon: "fas fa-trophy" }); [cite: 39]
                     db.ref('awards').push({ title: "Champion - BDPHO Regional Round", year: "2020", icon: "fas fa-medal" }); [cite: 40]
                     db.ref('awards').push({ title: "4th Place - 4th National Space Carnival", year: "2020", icon: "fas fa-rocket" }); [cite: 41]
+                    db.ref('awards').push({ title: "Champion - SJC Math Mania", year: "2020", icon: "fas fa-award" }); [cite: 42]
+                    db.ref('awards').push({ title: "Champion - HCC Science Fest", year: "2022", icon: "fas fa-award" }); [cite: 43]
+                    db.ref('awards').push({ title: "Bronze Honor - International Astronomy Olympiad", year: "2023", icon: "fas fa-globe" }); [cite: 48]
+                    db.ref('awards').push({ title: "Ranked 61st - 13th National Archery Championship, Bangladesh", year: "Sports", icon: "fas fa-bullseye" }); [cite: 55, 56]
                 }
             });
-            db.ref('profile/imageUrl').once('value', snapshot => {
-                if(!snapshot.exists()) {
-                    db.ref('profile').set({
-                        imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500"
-                    });
+
+            db.ref('skills').once('value', snap => {
+                if(!snap.exists()) {
+                    db.ref('skills').push({ category: "Programming Matrix", name: "C / C++ Matrix Engine" }); [cite: 58]
+                    db.ref('skills').push({ category: "Engineering Systems", name: "Quartus II System Logic" }); [cite: 59]
+                    db.ref('skills').push({ category: "Engineering Systems", name: "LTSpice Circuit Simulation" }); [cite: 59]
+                    db.ref('skills').push({ category: "Creative Suites", name: "Canva Pro Graphic Design Framework" }); [cite: 59]
                 }
             });
         }
 
-        /* === DYNAMIC REALTIME DATA ENGINE RENDERING (READ & SYNC) === */
-        function initializeRealtimeDataStreams() {
-            // Image Synchronization
-            db.ref('profile/imageUrl').on('value', snap => {
-                if(snap.exists()) document.getElementById('displayAvatar').src = snap.val();
+        /* === CORE REALTIME STREAM SYNCHRONIZER (READ) === */
+        function igniteRealtimeDatabaseSyncStreams() {
+            // Profile Matrix Sync Stream
+            db.ref('profile/avatarConfig').on('value', snap => {
+                if(snap.exists()) {
+                    const data = snap.val();
+                    const imgNode = document.getElementById('runtimeAvatarNode');
+                    if(data.url) imgNode.src = data.url;
+                    imgNode.style.transform = `scale(${data.zoom || 1})`;
+                    imgNode.style.objectPosition = `${data.posX || 50}% ${data.posY || 50}%`;
+                    
+                    // Populate sliders in admin panel if logged in
+                    document.getElementById('zoomSliderNode').value = data.zoom || 1;
+                    document.getElementById('panXSliderNode').value = data.posX || 50;
+                    document.getElementById('panYSliderNode').value = data.posY || 50;
+                }
             });
 
-            // Education Data Processing Loop
-            db.ref('education').on('value', snapshot => {
-                const container = document.getElementById('educationDynamicContainer');
-                container.innerHTML = '';
-                snapshot.forEach(child => {
+            // CV Target Pipeline Sync Stream
+            db.ref('cvLink').on('value', snap => {
+                if(snap.exists()) {
+                    const trackingUrl = snap.val();
+                    document.getElementById('uiActionViewCvBtn').href = trackingUrl;
+                    document.getElementById('uiActionDownloadCvBtn').href = trackingUrl;
+                }
+            });
+
+            // Academic Stream Sync Loop
+            db.ref('education').on('value', snap => {
+                const target = document.getElementById('runtimeEducationTarget');
+                target.innerHTML = '';
+                snap.forEach(child => {
                     const data = child.val();
-                    let adminMarkup = adminAuthenticationState ? `<div class="admin-btn-group"><button class="glossy-btn danger-btn" onclick="deleteNode('education','${child.key}')">Delete</button></div>` : '';
-                    container.innerHTML += `
-                        <div class="glass-card">
-                            <div class="item-row">
+                    let adminBlock = sessionAdministrationActiveToken ? `<button class="cms-inline-delete-trigger" onclick="purgeTargetNode('education','${child.key}')"><i class="fas fa-trash"></i> Drop Entry</button>` : '';
+                    target.innerHTML += `
+                        <div class="glassmorphic-node-card">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px;">
                                 <div>
-                                    <h3>${data.inst}</h3>
-                                    <p style="color:var(--text-muted); margin-top:5px;">${data.deg}</p>
+                                    <h3 style="font-family:'Orbitron'; font-size:20px; color:#fff;">${data.inst}</h3>
+                                    <p style="color:var(--text-dim); margin-top:6px; font-weight:600;">${data.deg}</p>
                                 </div>
-                                <div class="item-meta">${data.year}</div>
+                                <div style="color:var(--neon-electric); font-weight:700; font-family:'Orbitron'; font-size:14px;">${data.year}</div>
                             </div>
-                            ${adminMarkup}
+                            ${adminBlock}
                         </div>`;
                 });
             });
 
-            // Awards Data Processing Loop
-            db.ref('awards').on('value', snapshot => {
-                const container = document.getElementById('awardsDynamicContainer');
-                container.innerHTML = '';
-                snapshot.forEach(child => {
+            // Awards Stream Sync Loop
+            db.ref('awards').on('value', snap => {
+                const target = document.getElementById('runtimeAwardsTarget');
+                target.innerHTML = '';
+                snap.forEach(child => {
                     const data = child.val();
-                    let adminMarkup = adminAuthenticationState ? `<div class="admin-btn-group"><button class="glossy-btn danger-btn" onclick="deleteNode('awards','${child.key}')">Delete</button></div>` : '';
-                    container.innerHTML += `
-                        <div class="glass-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+                    let adminBlock = sessionAdministrationActiveToken ? `<button class="cms-inline-delete-trigger" onclick="purgeTargetNode('awards','${child.key}')"><i class="fas fa-trash"></i> Drop Asset</button>` : '';
+                    target.innerHTML += `
+                        <div class="glassmorphic-node-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
                             <div style="display:flex; align-items:center; gap:20px;">
-                                <i class="${data.icon || 'fas fa-award'}" style="font-size:28px; color:var(--neon-purple); text-shadow:0 0 10px var(--neon-purple);"></i>
-                                <span style="font-size:18px; font-weight:600;">${data.title}</span>
+                                <i class="${data.icon || 'fas fa-award'}" style="font-size:32px; color:var(--neon-electric); text-shadow: 0 0 15px var(--neon-spark-glow)"></i>
+                                <span style="font-size:17px; font-weight:700;">${data.title}</span>
                             </div>
-                            <div class="item-meta">${data.year}</div>
-                            ${adminMarkup}
+                            <div style="color:var(--text-dim); font-weight:700; font-family:'Orbitron'">${data.year}</div>
+                            ${adminBlock}
                         </div>`;
                 });
             });
 
-            // Skills Sorting Matrix Logic
-            db.ref('skills').on('value', snapshot => {
-                const container = document.getElementById('skillsDynamicContainer');
-                container.innerHTML = '';
-                let categories = {"Programming": [], "Software Engine": [], "Graphics Design": []};
+            // Technical Matrix Clusters Sync Loop
+            db.ref('skills').on('value', snap => {
+                const target = document.getElementById('runtimeSkillsTarget');
+                target.innerHTML = '';
+                let map = {"Programming Matrix": [], "Engineering Systems": [], "Creative Suites": []};
                 
-                snapshot.forEach(child => {
+                snap.forEach(child => {
                     const data = child.val();
-                    if(categories[data.category]) {
-                        categories[data.category].push({key: child.key, name: data.name});
-                    }
+                    if(map[data.category]) map[data.category].push({id: child.key, payload: data.name});
                 });
 
-                for (let cat in categories) {
-                    let tagsHTML = '';
-                    categories[cat].forEach(skill => {
-                        let delIcon = adminAuthenticationState ? `<i class="fas fa-times" style="color:red; margin-left:8px; cursor:pointer;" onclick="deleteNode('skills','${skill.key}')"></i>` : '';
-                        tagsHTML += `<span class="skill-tag">${skill.name} ${delIcon}</span>`;
+                for (let clusteringKey in map) {
+                    let clustersMarkup = '';
+                    map[clusteringKey].forEach(item => {
+                        let delAction = sessionAdministrationActiveToken ? `<i class="fas fa-times-circle" style="color:#ff4444; margin-left:10px; cursor:pointer;" onclick="purgeTargetNode('skills','${item.id}')"></i>` : '';
+                        clustersMarkup += `<span class="interactive-skill-badge"><i class="fas fa-atom" style="color:var(--neon-electric); margin-right:8px"></i> ${item.payload} ${delAction}</span>`;
                     });
-                    container.innerHTML += `
-                        <div class="glass-card">
-                            <h3 style="color:var(--neon-purple); margin-bottom:15px;"><i class="fas fa-microchip"></i> ${cat}</h3>
-                            <div>${tagsHTML || '<span style="color:var(--text-muted)">No metrics added</span>'}</div>
+
+                    target.innerHTML += `
+                        <div class="glassmorphic-node-card">
+                            <h3 style="font-family:'Orbitron'; color:var(--neon-electric); font-size:18px; margin-bottom:20px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;"><i class="fas fa-bolt"></i> ${clusteringKey}</h3>
+                            <div>${clustersMarkup || '<span style="color:var(--text-dim); font-size:13px">No vector fields tracked</span>'}</div>
                         </div>`;
                 }
             });
 
-            // Creative Assets/Designs Vector Sync Loop
-            db.ref('designs').on('value', snapshot => {
-                const container = document.getElementById('designsDynamicContainer');
-                container.innerHTML = '';
-                snapshot.forEach(child => {
+            // Creative Canvas Sync Loop
+            db.ref('designs').on('value', snap => {
+                const target = document.getElementById('runtimeDesignsTarget');
+                target.innerHTML = '';
+                snap.forEach(child => {
                     const data = child.val();
-                    let adminMarkup = adminAuthenticationState ? `<button class="glossy-btn danger-btn" style="margin-top:10px; width:100%; justify-content:center;" onclick="deleteNode('designs','${child.key}')">Remove Asset</button>` : '';
-                    container.innerHTML += `
-                        <div class="glass-card" style="text-align:center;">
-                            <i class="fas fa-cube" style="font-size:40px; color:var(--neon-purple); margin-bottom:15px;"></i>
-                            <h4 style="margin-bottom:15px;">${data.name}</h4>
-                            <a href="${data.link}" target="_blank" class="glossy-btn" style="width:100%; justify-content:center;"><i class="fab fa-google-drive"></i> Open Design Asset</a>
-                            ${adminMarkup}
+                    let adminBlock = sessionAdministrationActiveToken ? `<button class="cms-inline-delete-trigger" style="width:100%; margin-top:15px" onclick="purgeTargetNode('designs','${child.key}')"><i class="fas fa-trash"></i> Drop Asset</button>` : '';
+                    target.innerHTML += `
+                        <div class="glassmorphic-node-card" style="text-align:center;">
+                            <i class="fas fa-palette" style="font-size:45px; color:var(--neon-electric); margin-bottom:20px; text-shadow:0 0 15px var(--neon-spark-glow)"></i>
+                            <h4 style="font-family:'Orbitron'; font-size:16px; margin-bottom:20px;">${data.name}</h4>
+                            <a href="${data.link}" target="_blank" class="glossy-neon-action-trigger" style="width:100%; justify-content:center;"><i class="fab fa-google-drive"></i> Open Vector Workspace</a>
+                            ${adminBlock}
                         </div>`;
                 });
             });
 
-            // Contacts Processing Loop
-            db.ref('contact').on('value', snapshot => {
-                const container = document.getElementById('contactDynamicContainer');
-                container.innerHTML = '';
-                snapshot.forEach(child => {
+            // Communications Routing Sync Loop
+            db.ref('contact').on('value', snap => {
+                const target = document.getElementById('runtimeContactTarget');
+                target.innerHTML = '';
+                snap.forEach(child => {
                     const data = child.val();
-                    let adminMarkup = adminAuthenticationState ? `<button class="glossy-btn danger-btn" style="margin-top:10px; width:100%; justify-content:center;" onclick="deleteNode('contact','${child.key}')">Remove Channel</button>` : '';
-                    container.innerHTML += `
-                        <div class="glass-card" style="text-align:center;">
-                            <i class="${data.icon}" style="font-size:32px; color:var(--neon-purple); margin-bottom:10px;"></i>
-                            <h4>${data.platform}</h4>
-                            <a href="${data.value}" target="_blank" style="color:var(--text-muted); font-size:14px; word-break:break-all; display:block; margin:10px 0;">Launch Node</a>
-                            ${adminMarkup}
+                    let adminBlock = sessionAdministrationActiveToken ? `<button class="cms-inline-delete-trigger" style="width:100%; margin-top:15px" onclick="purgeTargetNode('contact','${child.key}')"><i class="fas fa-trash"></i> Purge Portal</button>` : '';
+                    target.innerHTML += `
+                        <div class="glassmorphic-node-card" style="text-align:center;">
+                            <i class="${data.icon || 'fas fa-link'}" style="font-size:38px; color:var(--neon-electric); margin-bottom:15px;"></i>
+                            <h4 style="font-family:'Orbitron'; font-size:16px; margin-bottom:8px;">${data.platform}</h4>
+                            <a href="${data.endpoint}" target="_blank" class="glossy-neon-action-trigger" style="width:100%; justify-content:center; padding:8px 15px; font-size:13px;">Connect Portal</a>
+                            ${adminBlock}
                         </div>`;
                 });
             });
         }
 
-        /* === CMS WRITE / PUSH CONTROLS (CREATE & UPDATE) === */
-        function saveProfilePic() {
-            const url = document.getElementById('avatarInputUrl').value;
-            if(!url) return alert("Address data string empty.");
-            db.ref('profile/imageUrl').set(url, err => {
-                if(!err) { alert("Display vector update synchronized."); document.getElementById('avatarInputUrl').value = ''; }
-            });
-        }
-
-        function createNewEducation() {
-            const inst = document.getElementById('eduInst').value;
-            const deg = document.getElementById('eduDeg').value;
-            const year = document.getElementById('eduYear').value;
-            if(!inst || !deg || !year) return alert("Fill out all educational parameters.");
+        /* === CORE WRITE ENGINES FOR SECURE DATA MANAGEMENT === */
+        function pushEducationNode() {
+            const inst = document.getElementById('eduInstField').value;
+            const deg = document.getElementById('eduDegreeField').value;
+            const year = document.getElementById('eduTimelineField').value;
+            if(!inst || !deg || !year) return alert("Validation error: Incomplete schema variables.");
             db.ref('education').push({ inst, deg, year }, err => {
-                if(!err) {
-                    alert("Educational record active.");
-                    document.getElementById('eduInst').value = ''; document.getElementById('eduDeg').value = ''; document.getElementById('eduYear').value = '';
-                }
+                if(!err) { alert("Academic matrix node deployed."); resetFields(['eduInstField', 'eduDegreeField', 'eduTimelineField']); }
             });
         }
 
-        function createNewAward() {
-            const title = document.getElementById('awardTitle').value;
-            const year = document.getElementById('awardYear').value;
-            const icon = document.getElementById('awardIcon').value || "fas fa-award";
-            if(!title || !year) return alert("Fill out all award parameter metrics.");
+        function pushAwardNode() {
+            const title = document.getElementById('awardTitleField').value;
+            const year = document.getElementById('awardYearField').value;
+            const icon = document.getElementById('awardIconField').value || "fas fa-award";
+            if(!title || !year) return alert("Validation error: Honor schema variables incomplete.");
             db.ref('awards').push({ title, year, icon }, err => {
-                if(!err) {
-                    alert("Award recognition logged.");
-                    document.getElementById('awardTitle').value = ''; document.getElementById('awardYear').value = ''; document.getElementById('awardIcon').value = '';
-                }
+                if(!err) { alert("Achievement node pushed successfully."); resetFields(['awardTitleField', 'awardYearField', 'awardIconField']); }
             });
         }
 
-        function createNewSkill() {
-            const category = document.getElementById('skillCategorySelect').value;
-            const name = document.getElementById('skillItemName').value;
-            if(!name) return alert("Skill naming parameter missing.");
+        function pushSkillNode() {
+            const category = document.getElementById('skillCategorySelectorNode').value;
+            const name = document.getElementById('skillNameStringField').value;
+            if(!name) return alert("Validation error: Capability parameter target missing.");
             db.ref('skills').push({ category, name }, err => {
-                if(!err) { alert("Skill element tracked."); document.getElementById('skillItemName').value = ''; }
+                if(!err) { alert("Capability mapping token deployed."); resetFields(['skillNameStringField']); }
             });
         }
 
-        function createNewDesignAsset() {
-            const name = document.getElementById('designProjectName').value;
-            const link = document.getElementById('designDriveLink').value;
-            if(!name || !link) return alert("Design project metrics incomplete.");
+        function pushDesignNode() {
+            const name = document.getElementById('designProjectTitleField').value;
+            const link = document.getElementById('designDriveUrlField').value;
+            if(!name || !link) return alert("Validation error: Showcase workspace entities parameters structural gap.");
             db.ref('designs').push({ name, link }, err => {
-                if(!err) {
-                    alert("Creative vector added.");
-                    document.getElementById('designProjectName').value = ''; document.getElementById('designDriveLink').value = '';
-                }
+                if(!err) { alert("Asset catalog record logged."); resetFields(['designProjectTitleField', 'designDriveUrlField']); }
             });
         }
 
-        function createNewContactCard() {
-            const platform = document.getElementById('contactPlatform').value;
-            const value = document.getElementById('contactValue').value;
-            const icon = document.getElementById('contactIcon').value || "fas fa-link";
-            if(!platform || !value) return alert("Connection parameters required.");
-            db.ref('contact').push({ platform, value, icon }, err => {
-                if(!err) {
-                    alert("Communication portal deployed.");
-                    document.getElementById('contactPlatform').value = ''; document.getElementById('contactValue').value = ''; document.getElementById('contactIcon').value = '';
-                }
+        function commitCvTargetLink() {
+            const link = document.getElementById('cvDriveAddressField').value;
+            if(!link) return alert("URL path definition missing.");
+            db.ref('cvLink').set(link, err => {
+                if(!err) { alert("System CV routing registry updated."); resetFields(['cvDriveAddressField']); }
             });
         }
 
-        /* === GLOBAL CMS NODE PURGE TOOL (DELETE) === */
-        function deleteNode(path, key) {
-            if(confirm(`Confirm permanent erasure of node item ID: ${key} from ${path}?`)) {
-                db.ref(`${path}/${key}`).remove()
-                    .then(() => alert("Data entity safely dropped."))
-                    .catch(err => alert("Error pruning system structure: " + err));
+        function pushContactGatewayNode() {
+            const platform = document.getElementById('contactPlatformNameField').value;
+            const endpoint = document.getElementById('contactTargetEndpointField').value;
+            const icon = document.getElementById('contactPlatformIconField').value || "fas fa-link";
+            if(!platform || !endpoint) return alert("Validation error: Network infrastructure channel parameters invalid.");
+            db.ref('contact').push({ platform, endpoint, icon }, err => {
+                if(!err) { alert("Communication route gateway operational."); resetFields(['contactPlatformNameField', 'contactTargetEndpointField', 'contactPlatformIconField']); }
+            });
+        }
+
+        /* === GLOBAL HARD TERMINATION SCRIPTER (DELETE) === */
+        function purgeTargetNode(routingPath, entityKey) {
+            if(confirm(`System override confirmation: Permanently prune object target node entity ID [${entityKey}] from database context directory path [/${routingPath}]?`)) {
+                db.ref(`${routingPath}/${entityKey}`).remove()
+                    .then(() => alert("Data token safely severed from production environment."))
+                    .catch(err => alert("System fault encountered during object drop: " + err));
             }
+        }
+
+        function resetFields(idArray) {
+            idArray.forEach(id => document.getElementById(id).value = '');
         }
     </script>
 </body>

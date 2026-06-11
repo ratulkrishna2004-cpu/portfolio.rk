@@ -1,778 +1,718 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ratul Krishna Mojumder | EEE & Design Studio Portfolio</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ratul Krishna Mojumder — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght=0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 
-    <style>
-        :root {
-            --bg-deep: #030108;
-            --neon-electric: #b026ff;
-            --neon-spark-glow: rgba(176, 38, 255, 0.55);
-            --glass-backdrop: rgba(15, 8, 32, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.07);
-            --text-neon: #f1ecf7;
-            --text-dim: #8b8599;
-        }
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            scroll-behavior: smooth;
-        }
+<style>
+:root {
+  --bg: #080810;
+  --bg2: #0d0d1a;
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(160,100,255,0.18);
+  --accent: #a855f7;
+  --accent2: #7c3aed;
+  --accent3: #c084fc;
+  --glow: rgba(168,85,247,0.35);
+  --text: #f3f4f6;
+  --text-muted: #9ca3af;
+}
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-deep);
-            color: var(--text-neon);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
+* { box-sizing: border-box; margin:0; padding:0; font-family: 'DM Sans', sans-serif; }
+body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 60px; }
+h1, h2, h3, .syne { font-family: 'Syne', sans-serif; font-weight: 700; }
 
-        /* === ELECTRICAL GLOSSY GLOW NAVIGATION === */
-        nav {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            z-index: 999;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 6%;
-            background: rgba(3, 1, 8, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-        }
+/* Global Styling Layouts from portfolio.html */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+nav { display: flex; justify-content: space-between; align-items: center; padding: 30px 0; border-bottom: 1px solid var(--glass-border); }
+.logo { font-size: 24px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+.logo span { color: var(--accent); }
 
-        .studio-brand {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-spark-glow);
-        }
-        .studio-brand span { color: var(--neon-electric); }
+/* Glass Cards Spark UI Ignition */
+.glass-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 30px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+}
+.glass-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent3);
+  box-shadow: 0 12px 40px var(--glow);
+}
 
-        .desktop-routing-links {
-            display: flex;
-            list-style: none;
-            gap: 35px;
-            align-items: center;
-        }
-        .desktop-routing-links a {
-            color: var(--text-dim);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .desktop-routing-links a:hover {
-            color: var(--neon-electric);
-            text-shadow: 0 0 12px var(--neon-electric);
-        }
+/* Sections Structure Layout */
+section { margin-top: 100px; }
+.section-title { font-size: 36px; margin-bottom: 40px; position: relative; display: inline-block; }
+.section-title::after { content:''; position:absolute; bottom:-10px; left:0; width:60px; height:4px; background:var(--accent); border-radius:2px; }
 
-        /* === INTERACTIVE PHONE NAVIGATION OVERLAY SCREEN === */
-        .hamburger-trigger-node {
-            display: none;
-            cursor: pointer;
-            font-size: 26px;
-            color: #fff;
-            transition: transform 0.3s ease;
-        }
-        .hamburger-trigger-node:hover { color: var(--neon-electric); }
+/* Admin Control Switch Panel Panels */
+.admin-control-panel {
+  display: none;
+  background: rgba(124, 58, 237, 0.1);
+  border: 2px dashed var(--accent);
+  padding: 25px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+}
+.admin-control-panel input, .admin-control-panel select, .admin-control-panel textarea {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--glass-border);
+  color: #fff;
+  padding: 12px;
+  border-radius: 10px;
+  margin: 8px 10px 8px 0;
+  font-size: 14px;
+}
+.admin-control-panel input:focus { border-color: var(--accent); outline: none; }
 
-        .phone-overlay-fullscreen-menu {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(3, 1, 8, 0.98);
-            backdrop-filter: blur(25px);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease-in-out;
-        }
-        .phone-overlay-fullscreen-menu.active-view {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .phone-overlay-fullscreen-menu a {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 26px;
-            color: var(--text-neon);
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s;
-        }
-        .phone-overlay-fullscreen-menu a:hover {
-            color: var(--neon-electric);
-            text-shadow: 0 0 15px var(--neon-electric);
-        }
-        .exit-overlay-trigger {
-            position: absolute;
-            top: 30px; right: 40px;
-            font-size: 35px;
-            color: #fff;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .exit-overlay-trigger:hover { transform: rotate(90deg); color: var(--neon-electric); }
+.btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border: none; padding: 12px 28px; border-radius: 50px;
+  cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+}
+.btn:hover { box-shadow: 0 0 20px var(--glow); transform: scale(1.02); }
+.btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
-        /* === GLOSSY GLOW GLASS CARDS CIRCUITRY AESTHETIC === */
-        .glossy-neon-action-trigger {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            padding: 12px 30px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-        .glossy-neon-action-trigger:hover {
-            border-color: var(--neon-electric);
-            box-shadow: 0 0 30px var(--neon-spark-glow), inset 0 0 10px var(--neon-spark-glow);
-            transform: translateY(-3px);
-            text-shadow: 0 0 5px #fff;
-        }
+/* Grid Layout Matrix Configurations */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 30px; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
 
-        .circuit-section-wrapper {
-            max-width: 1140px;
-            margin: 0 auto;
-            padding: 120px 24px 40px 24px;
-        }
+/* Hero / Profile Alignment */
+.hero-wrapper { display: flex; align-items: center; justify-content: space-between; gap: 50px; margin-top: 60px; }
+.hero-text h1 { font-size: 56px; line-height: 1.1; margin-bottom: 20px; }
+.hero-avatar { width: 320px; height: 320px; border-radius: 50%; overflow: hidden; border: 4px solid var(--glass-border); box-shadow: 0 0 40px var(--glow); position: relative; }
+.hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .glowing-vector-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 32px;
-            font-weight: 900;
-            margin-bottom: 50px;
-            text-align: left;
-            letter-spacing: 1px;
-            background: linear-gradient(90deg, #fff, var(--neon-electric));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+/* Skills Badges Formatting */
+.skills-wrapper { display: flex; flex-direction: column; gap: 30px; }
+.skill-badge-container { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 15px; }
+.skill-badge { background: var(--glass); border: 1px solid var(--glass-border); padding: 8px 18px; border-radius: 50px; display: flex; align-items: center; gap: 8px; font-weight: 500; }
 
-        .glassmorphic-node-card {
-            background: var(--glass-backdrop);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 24px;
-            backdrop-filter: blur(15px);
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            text-align: left;
-        }
-        /* Touch/Mouse Spark Ignition Effect */
-        .glassmorphic-node-card:hover {
-            border-color: rgba(176, 38, 255, 0.5);
-            box-shadow: 0 0 40px rgba(176, 38, 255, 0.25), inset 0 0 15px rgba(176, 38, 255, 0.1);
-            transform: scale(1.01) translateY(-2px);
-        }
+/* Interactive Gallery Filter System Tabs */
+.gallery-tabs { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 30px; }
+.tab-btn { background: var(--glass); border: 1px solid var(--glass-border); color:#fff; padding: 10px 20px; border-radius: 50px; cursor: pointer; transition: all 0.3s; }
+.tab-btn.active, .tab-btn:hover { background: var(--accent); border-color: var(--accent); }
 
-        /* === STUDIO HERO SECTION WITH DRAGGABLE AVATAR CONFIGURATION === */
-        .studio-hero-canvas {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at center, rgba(22, 9, 43, 0.6) 0%, var(--bg-deep) 75%);
-            padding-top: 120px;
-        }
+/* Contacts Footer Links Style */
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.contact-card { text-align: center; padding: 25px; cursor: pointer; text-decoration: none; color: inherit; }
+.contact-card .iconify { font-size: 40px; color: var(--accent); margin-bottom: 15px; }
 
-        .avatar-frame-container {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            padding: 6px;
-            background: linear-gradient(135deg, var(--glass-border), var(--neon-electric), var(--bg-deep));
-            box-shadow: 0 0 40px var(--neon-spark-glow);
-            margin-bottom: 35px;
-            overflow: hidden;
-            position: relative;
-        }
-        .avatar-frame-container img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #090514;
-            transition: transform 0.1s ease;
-        }
+/* Icon Selection Component Overlay Modal */
+.icon-modal {
+  position: fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(5,3,15,0.95);
+  z-index: 10000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px);
+}
+.icon-modal-content { background: var(--bg2); border:1px solid var(--glass-border); border-radius:24px; padding:40px; max-width:600px; width:90%; text-align:center; }
+.icon-picker-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin: 25px 0; max-height: 300px; overflow-y: auto; padding: 10px; }
+.icon-choice { font-size: 32px; padding: 15px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+.icon-choice:hover { border-color: var(--accent); background: rgba(168,85,247,0.2); transform: scale(1.1); }
 
-        /* === INTEGRATED DYNAMIC ENGINE CMS PANELS === */
-        .admin-cms-control-panel {
-            display: none; /* Persistent State Authentication Switch */
-            background: rgba(176, 38, 255, 0.04);
-            border: 2px dashed var(--neon-electric);
-            padding: 25px;
-            border-radius: 18px;
-            margin-bottom: 30px;
-            text-align: left;
-            animation: circuitPulse 3s infinite alternate;
-        }
-        @keyframes circuitPulse {
-            0% { box-shadow: 0 0 10px rgba(176, 38, 255, 0.1); }
-            100% { box-shadow: 0 0 25px rgba(176, 38, 255, 0.3); }
-        }
-
-        .admin-cms-control-panel input, .admin-cms-control-panel select {
-            background: rgba(5, 2, 12, 0.85);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            padding: 12px 18px;
-            border-radius: 10px;
-            margin: 8px 12px 8px 0;
-            font-family: inherit;
-            font-size: 14px;
-        }
-        .admin-cms-control-panel input:focus { border-color: var(--neon-electric); outline: none; box-shadow: 0 0 10px var(--neon-spark-glow); }
-        
-        .cms-inline-delete-trigger {
-            background: rgba(255, 70, 70, 0.15);
-            border: 1px solid rgba(255, 70, 70, 0.3);
-            color: #ff5555;
-            padding: 6px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-        .cms-inline-delete-trigger:hover { background: #ff3333; color: #fff; box-shadow: 0 0 15px rgba(255,51,51,0.4); }
-
-        .skills-matrix-cluster {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-        }
-        .interactive-skill-badge {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--glass-border);
-            padding: 8px 16px;
-            border-radius: 30px;
-            margin: 6px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        /* Helper Search Tool for Icons */
-        .icon-search-datalist-helper {
-            font-size: 11px;
-            color: var(--text-dim);
-            margin-top: 4px;
-            display: block;
-        }
-    </style>
+@media(max-width: 768px) {
+  .hero-wrapper { flex-direction: column-reverse; text-align: center; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .section-title { font-size: 28px; }
+}
+</style>
 </head>
 <body>
 
+  <div class="icon-modal" id="globalIconModal">
+    <div class="icon-modal-content">
+      <h3 style="margin-bottom: 15px;"><i class="fas fa-search"></i> Select Design Asset Icon</h3>
+      <input type="text" id="iconSearchInput" placeholder="Type pattern keywords (e.g., code, heart, globe, star)..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--glass-border); padding:12px; color:#fff; border-radius:10px; margin-bottom:15px;" oninput="filterIconModalList()">
+      <div class="icon-picker-grid" id="iconModalTargetGrid"></div>
+      <button class="btn btn-danger" onclick="closeIconModal()">Close Overlay</button>
+    </div>
+  </div>
+
+  <div class="container">
     <nav>
-        <div class="studio-brand">RATUL<span>.</span>STUDIO</div>
-        <ul class="desktop-routing-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#education">Education</a></li>
-            <li><a href="#awards">Awards</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#designs">Designs</a></li>
-            <li><a href="#cv-vault">CV Engine</a></li>
-            <li><a href="#contact-channels">Contact</a></li>
-            <li><button class="glossy-neon-action-trigger" id="masterAuthSystemBtn" onclick="triggerSystemAuthentication()"><i class="fas fa-lock"></i> System Admin</button></li>
-        </ul>
-        <div class="hamburger-trigger-node" onclick="openInteractivePhoneMenu()">
-            <i class="fas fa-bars"></i>
-        </div>
+      <div class="logo">RATUL<span>.</span></div>
+      <button class="btn" id="systemAuthTriggerBtn" onclick="toggleSystemAdministration()"><i class="fas fa-lock"></i> Workspace Login</button>
     </nav>
 
-    <div class="phone-overlay-fullscreen-menu" id="mobileOverlayMenuContainer">
-        <div class="exit-overlay-trigger" onclick="closeInteractivePhoneMenu()"><i class="fas fa-times"></i></div>
-        <a href="#home" onclick="closeInteractivePhoneMenu()">Home</a>
-        <a href="#education" onclick="closeInteractivePhoneMenu()">Education</a>
-        <a href="#awards" onclick="closeInteractivePhoneMenu()">Awards</a>
-        <a href="#skills" onclick="closeInteractivePhoneMenu()">Skills</a>
-        <a href="#designs" onclick="closeInteractivePhoneMenu()">Designs</a>
-        <a href="#cv-vault" onclick="closeInteractivePhoneMenu()">CV Vault</a>
-        <a href="#contact-channels" onclick="closeInteractivePhoneMenu()">Contact</a>
-    </div>
-
-    <section id="home" class="studio-hero-canvas">
-        <div class="avatar-frame-container">
-            <img id="runtimeAvatarNode" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500" alt="Ratul Krishna Mojumder">
-        </div>
-
-        <div class="admin-cms-control-panel" id="avatarConfigCmsPanel" style="width: 90%; max-width: 500px; text-align: center;">
-            <h4 style="margin-bottom:12px; font-family:'Orbitron'"><i class="fas fa-crop-alt"></i> Fitting Pixels Frame Sync</h4>
-            <input type="text" id="rawGithubLinkField" placeholder="Paste GitHub Image Raw Address URL..." style="width: 100%; margin-bottom: 15px;">
-            
-            <div style="margin: 10px 0; text-align: left;">
-                <label style="font-size:12px; color:var(--text-dim)">Zoom Scale Matrix Selector:</label>
-                <input type="range" id="zoomSliderNode" min="1" max="3" step="0.05" value="1" style="width:100%" oninput="applyLiveAvatarTransforms()">
-            </div>
-            <div style="margin: 10px 0; text-align: left;">
-                <label style="font-size:12px; color:var(--text-dim)">Horizontal Offset Alignment (X):</label>
-                <input type="range" id="panXSliderNode" min="0" max="100" step="1" value="50" style="width:100%" oninput="applyLiveAvatarTransforms()">
-            </div>
-            <div style="margin: 10px 0; text-align: left;">
-                <label style="font-size:12px; color:var(--text-dim)">Vertical Offset Alignment (Y):</label>
-                <input type="range" id="panYSliderNode" min="0" max="100" step="1" value="50" style="width:100%" oninput="applyLiveAvatarTransforms()">
-            </div>
-            <button class="glossy-neon-action-trigger" style="margin-top:15px; width:100%; justify-content:center;" onclick="commitAvatarTransformPayload()">Lock Frame Settings</button>
-        </div>
-
-        <h1 style="font-family:'Orbitron'; font-size: 52px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px;">Ratul Krishna Mojumder</h1>
-        <p style="color: var(--text-dim); font-size: 19px; max-width: 650px; margin-bottom: 40px; font-weight: 500;">⚡ Electrical & Electronic Engineer [cite: 5] · Creative Graphics Designer [cite: 6]</p>
+    <section class="hero-wrapper" id="home">
+      <div class="hero-text">
+        <h1 id="viewName">Ratul Krishna Mojumder</h1>
+        <p id="viewTagline" style="font-size: 20px; color: var(--text-muted); margin-bottom: 30px;">Electrical & Electronic Engineering Student at AUST | Graphic Designer</p>
         
-        <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
-            <a href="#designs" class="glossy-neon-action-trigger"><i class="fas fa-bezier-curve"></i> View Design Studio</a>
-            <a href="#cv-vault" class="glossy-neon-action-trigger"><i class="fas fa-file-invoice"></i> Access CV Deck</a>
-        </div>
-    </section>
-
-    <section id="education" class="circuit-section-wrapper">
-        <h2 class="glowing-vector-title">Educational Matrix</h2>
-        <div class="admin-cms-control-panel" id="educationCmsPanel">
-            <h4><i class="fas fa-plus"></i> Add Institution Log Node</h4>
-            <input type="text" id="eduInstField" placeholder="Institution Name (e.g., AUST)">
-            <input type="text" id="eduDegreeField" placeholder="Degree/Concentration Track">
-            <input type="text" id="eduTimelineField" placeholder="Year Range (e.g., 2024-Present)">
-            <button class="glossy-neon-action-trigger" onclick="pushEducationNode()">Insert Database Record</button>
-        </div>
-        <div id="runtimeEducationTarget"></div>
-    </section>
-
-    <section id="awards" class="circuit-section-wrapper">
-        <h2 class="glowing-vector-title">Honors & Achievements</h2>
-        <div class="admin-cms-control-panel" id="awardsCmsPanel">
-            <h4><i class="fas fa-plus"></i> Append Honor Node</h4>
-            <input type="text" id="awardTitleField" placeholder="Achievement Title Heading">
-            <input type="text" id="awardYearField" placeholder="Timeline Year / Indexing Tag">
-            <input type="text" id="awardIconField" list="faIconDatalist" placeholder="Search/Type FontAwesome Class (e.g., fas fa-trophy)">
-            <span class="icon-search-datalist-helper">💡 Search Filter Tool Active: Datalist automatic parameters configured for match profiles.</span>
-            <button class="glossy-neon-action-trigger" style="margin-top:12px;" onclick="pushAwardNode()">Insert Vault Asset</button>
-        </div>
-        <div id="runtimeAwardsTarget"></div>
-    </section>
-
-    <section id="skills" class="circuit-section-wrapper">
-        <h2 class="glowing-vector-title">Technical Capabilities</h2>
-        <div class="admin-cms-control-panel" id="skillsCmsPanel">
-            <h4><i class="fas fa-plus"></i> Insert Engine Skillset Node</h4>
-            <select id="skillCategorySelectorNode">
-                <option value="Programming Matrix">Programming Languages</option>
-                <option value="Engineering Systems">Engineering Simulation & Cad Packages</option>
-                <option value="Creative Suites">Creative Graphic Layout Suites</option>
-            </select>
-            <input type="text" id="skillNameStringField" placeholder="Skill Identifier String (e.g., Quartus II)">
-            <button class="glossy-neon-action-trigger" onclick="pushSkillNode()">Map Skill Entity</button>
-        </div>
-        <div class="skills-matrix-cluster" id="runtimeSkillsTarget"></div>
-    </section>
-
-    <section id="designs" class="circuit-section-wrapper">
-        <h2 class="glowing-vector-title">Creative Vector Space</h2>
-        <div class="admin-cms-control-panel" id="designsCmsPanel">
-            <h4><i class="fas fa-plus"></i> Launch New Design Node Folder</h4>
-            <input type="text" id="designProjectTitleField" placeholder="Design Showcase Name">
-            <input type="text" id="designDriveUrlField" placeholder="Secure Cloud Drive Address link">
-            <button class="glossy-neon-action-trigger" onclick="pushDesignNode()">Deploy Portfolio Element</button>
-        </div>
-        <div id="runtimeDesignsTarget" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap:25px;"></div>
-    </section>
-
-    <section id="cv-vault" class="circuit-section-wrapper">
-        <h2 class="glowing-vector-title">Curriculum Vitae Repository</h2>
-        <div class="admin-cms-control-panel" id="cvCmsPanel" style="max-width: 500px;">
-            <h4><i class="fas fa-link"></i> Update CV Storage Address</h4>
-            <input type="text" id="cvDriveAddressField" placeholder="Google Drive Shared Address Link..." style="width: 100%;">
-            <button class="glossy-neon-action-trigger" style="margin-top:12px;" onclick="commitCvTargetLink()">Update Target Link</button>
+        <div class="admin-control-panel" id="profileCmsPanel">
+          <h3>Update Structural Vector Metadata</h3>
+          <input type="text" id="inputProfileName" placeholder="Update Full Name Data String" style="width:100%;">
+          <input type="text" id="inputProfileTagline" placeholder="Update Subheading Tagline Details" style="width:100%;">
+          <input type="text" id="inputProfileImage" placeholder="Paste GitHub Raw Image URL Address Link" style="width:100%;">
+          <button class="btn" onclick="commitProfileMetadata()">Sync Profile Assets</button>
         </div>
         
-        <div class="glassmorphic-node-card" style="text-align: center; padding: 50px 20px;">
-            <i class="fas fa-file-pdf" style="font-size: 65px; color: var(--neon-electric); margin-bottom: 25px; text-shadow: 0 0 20px var(--neon-spark-glow)"></i>
-            <h3 style="margin-bottom: 12px; font-family:'Orbitron'">Verified Asset Directory File</h3>
-            <p style="color: var(--text-dim); margin-bottom: 35px;">Real-time validated structural resume asset file linked securely via Google Cloud Framework integration.</p>
-            
-            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                <a id="uiActionViewCvBtn" href="#" target="_blank" class="glossy-neon-action-trigger"><i class="fas fa-eye"></i> View Workspace</a>
-                <a id="uiActionDownloadCvBtn" href="#" target="_blank" class="glossy-neon-action-trigger"><i class="fas fa-cloud-download-alt"></i> Instant Download File</a>
+        <a id="globalCvActionLink" href="#" target="_blank" class="btn"><span class="iconify" data-icon="solar:document-bold"></span> Access Portfolio Resume (CV)</a>
+        
+        <div class="admin-control-panel" id="cvCmsPanel" style="margin-top: 15px;">
+          <input type="text" id="inputCvLink" placeholder="Update Central Google Drive CV File Link" style="width: 80%;">
+          <button class="btn" onclick="commitCvTargetLink()">Update Link</button>
+        </div>
+      </div>
+      <div class="hero-avatar">
+        <img id="viewAvatarImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500" alt="Avatar Target Visual">
+      </div>
+    </section>
+
+    <section id="education">
+      <h2 class="section-title">Educational Matrix</h2>
+      <div class="admin-control-panel" id="eduCmsPanel">
+        <h4>Add Academic Milestone Log Entity</h4>
+        <input type="text" id="eduInst" placeholder="Institution Name (e.g., AUST)">
+        <input type="text" id="eduDeg" placeholder="Degree / Criteria Description String">
+        <input type="text" id="eduYear" placeholder="Timeline Year Mapping Index">
+        <button class="btn" onclick="pushEducationNode()">Insert Metric</button>
+      </div>
+      <div class="grid-2" id="renderEduTarget"></div>
+    </section>
+
+    <section id="awards">
+      <h2 class="section-title">Honors & Achievements</h2>
+      <div class="admin-control-panel" id="awardsCmsPanel">
+        <h4>Append Award Asset Node</h4>
+        <input type="text" id="awardTitle" placeholder="Award Title Heading Content" style="width:40%;">
+        <input type="text" id="awardYear" placeholder="Year / Event Index" style="width:20%;">
+        <input type="text" id="awardIcon" placeholder="Iconify String Reference Link (e.g. solar:cup-bold)" style="width:30%;" readonly onclick="launchIconSelectionFlow('awardIcon')">
+        <button class="btn" onclick="pushAwardNode()">Deploy Asset</button>
+      </div>
+      <div class="grid-2" id="renderAwardsTarget"></div>
+    </section>
+
+    <section id="research">
+      <h2 class="section-title">Research Publications & Work</h2>
+      <div class="admin-control-panel" id="researchCmsPanel">
+        <h4>Launch New Research Article Blueprint</h4>
+        <input type="text" id="researchTitle" placeholder="Manuscript Research Title String" style="width:100%;">
+        <textarea id="researchDesc" placeholder="Abstract Summary Information Body Context Details..." style="width:100%; height:100px;"></textarea>
+        <input type="text" id="researchTags" placeholder="Comma Separated Tag Elements (e.g. IEEE, Magnetic Field, EEE)" style="width:100%;">
+        <button class="btn" onclick="pushResearchNode()">Publish Document Target</button>
+      </div>
+      <div id="renderResearchTarget" style="display:flex; flex-direction:column; gap:25px;"></div>
+    </section>
+
+    <section id="skills">
+      <h2 class="section-title">Technical Matrix</h2>
+      <div class="admin-control-panel" id="skillsCmsPanel">
+        <h4>Insert Dynamic Engine Matrix Skill Entity Tag</h4>
+        <select id="skillCategorySelector">
+          <option value="Programming Languages">Programming Languages</option>
+          <option value="Engineering Systems">Engineering Simulation & Hardware Tools</option>
+          <option value="Design & Creative Suites">Design Layout & Creative Media Suites</option>
+        </select>
+        <input type="text" id="skillNameString" placeholder="Capability String Label (e.g. Quartus II)">
+        <input type="text" id="skillBadgeIcon" placeholder="Icon Class (e.g. teenyicons:python-solid)" readonly onclick="launchIconSelectionFlow('skillBadgeIcon')">
+        <button class="btn" onclick="pushSkillNode()">Map Skill Item</button>
+      </div>
+      <div class="glass-card skills-wrapper" id="renderSkillsTarget"></div>
+    </section>
+
+    <section id="gallery">
+      <h2 class="section-title">Creative Vector Spaces & Portfolios</h2>
+      <div class="admin-control-panel" id="galleryCmsPanel">
+        <h4>Manage Gallery Categories & Deploy Drive Folders</h4>
+        <input type="text" id="newCatName" placeholder="Add Category Cluster Classification String (e.g. Sports Graphics)">
+        <button class="btn" onclick="pushNewGalleryCategory()">Create Category Node</button>
+        <hr style="margin:20px 0; border:0; border-top:1px dashed var(--glass-border);">
+        <h5>Append Work Asset Image / Google Drive Data Node link to Current Active Category</h5>
+        <input type="text" id="assetTitle" placeholder="Asset Layout Component Project Identifier Naming">
+        <input type="text" id="assetDriveUrl" placeholder="Direct Path Target Storage URL Link Reference Address">
+        <button class="btn" onclick="pushAssetToCurrentActiveCategory()">Deploy Design Node Link</button>
+      </div>
+      
+      <div class="gallery-tabs" id="renderGalleryTabsTarget"></div>
+      <div class="grid-3" id="renderGalleryItemsGridTarget"></div>
+    </section>
+
+    <section id="contacts">
+      <h2 class="section-title">Communications Hub</h2>
+      <div class="admin-control-panel" id="contactCmsPanel">
+        <h4>Deploy Active Interface Communications Channel Bridge</h4>
+        <input type="text" id="contactPlatformName" placeholder="Platform Target Title (e.g. LinkedIn)">
+        <input type="text" id="contactEndpointUrl" placeholder="Full Target URL/Endpoint Context Path Identity">
+        <input type="text" id="contactPlatformIcon" placeholder="Icon Definition Code (e.g. solar:phone-bold)" readonly onclick="launchIconSelectionFlow('contactPlatformIcon')">
+        <button class="btn" onclick="pushContactGatewayNode()">Deploy Communications Node</button>
+      </div>
+      <div class="contact-grid" id="renderContactGatewaysTarget"></div>
+    </section>
+  </div>
+
+  <script>
+  /* === SYSTEM CORE DATABASE INITIALIZATION SETUP === */
+  const firebaseConfig = {
+    apiKey: "AIzaSyAGBsipDr6skfsvDrYHHCe7CK9AWcCt-dA",
+    authDomain: "portfolio-rk-41348.firebaseapp.com",
+    databaseURL: "https://portfolio-rk-41348-default-rtdb.firebaseio.com",
+    projectId: "portfolio-rk-41348",
+    storageBucket: "portfolio-rk-41348.firebasestorage.app",
+    messagingSenderId: "1012347569431",
+    appId: "1:1012347569431:web:75d9d60efc9513ac63e352",
+    measurementId: "G-EXC67LS81T"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Unified global runtime UI state
+  let state = {
+    profile: { name: "Ratul Krishna Mojumder", tagline: "Electrical & Electronic Engineering Student | Graphic Designer", img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500" },
+    cvLink: "https://drive.google.com/file/d/1gAzA8MhB3u5zDfUSCMtMANk3hZlVgp0K/view?usp=sharing",
+    education: {},
+    awards: {},
+    research: {},
+    skills: {},
+    categories: {},
+    contacts: {}
+  };
+
+  let activeCategoryKeyRef = "";
+  let activeSelectedInputIconTargetId = "";
+  let adminSessionActiveToken = false;
+
+  // Preset searchable dynamic system icons catalog
+  const staticIconMatrixCatalog = [
+    "solar:cup-bold", "solar:document-bold", "solar:case-bold", "solar:medal-ribbons-bold",
+    "solar:code-circle-bold", "solar:palette-bold", "solar:phone-bold", "solar:letter-bold",
+    "solar:link-bold", "solar:laptop-minimalistic-bold", "solar:atom-bold", "solar:globus-bold",
+    "teenyicons:python-solid", "akar-icons:cpp-fill", "akar-icons:javascript-fill", "bi:vector-pen"
+  ];
+
+  /* === RUNTIME DATA LIFECYCLE LISTENERS === */
+  window.onload = () => {
+    if (localStorage.getItem('rkStudioSecureToken') === 'sessionGranted092418') {
+      adminSessionActiveToken = true;
+      activateCmsInterfaceViews();
+    }
+    igniteGlobalRealtimeSyncStreams();
+  };
+
+  function toggleSystemAdministration() {
+    if (adminSessionActiveToken) {
+      if (confirm("Disconnect active management clearance privileges?")) {
+        localStorage.removeItem('rkStudioSecureToken');
+        location.reload();
+      }
+    } else {
+      const lockKey = prompt("Provide Secure Space Authorization Admin Token Verification:");
+      if (lockKey === "092418") {
+        adminSessionActiveToken = true;
+        localStorage.setItem('rkStudioSecureToken', 'sessionGranted092418');
+        alert("Authorization Access Validated. Control Matrix interfaces engaged.");
+        activateCmsInterfaceViews();
+        renderAllStructuralInterfaceBlocks();
+      } else {
+        alert("Checkpoint verification mismatch.");
+      }
+    }
+  }
+
+  function activateCmsInterfaceViews() {
+    document.querySelectorAll('.admin-control-panel').forEach(card => card.style.display = "block");
+    const loginBtn = document.getElementById('systemAuthTriggerBtn');
+    loginBtn.innerHTML = '<i class="fas fa-unlock-open"></i> Log out Panel';
+    loginBtn.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
+  }
+
+  /* === CRITICAL FIX: REAL-TIME TWO-WAY MULTI-DEVICE BROADCAST LISTENERS === */
+  function igniteGlobalRealtimeSyncStreams() {
+    // 1. Profile Core Metrics Listener
+    db.ref('profile').on('value', snap => {
+      if(snap.exists()) {
+        state.profile = snap.val();
+        document.getElementById('viewName').innerText = state.profile.name || "Ratul Krishna Mojumder";
+        document.getElementById('viewTagline').innerText = state.profile.tagline || "";
+        document.getElementById('viewAvatarImg').src = state.profile.img || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500";
+        
+        document.getElementById('inputProfileName').value = state.profile.name || "";
+        document.getElementById('inputProfileTagline').value = state.profile.tagline || "";
+        document.getElementById('inputProfileImage').value = state.profile.img || "";
+      }
+    });
+
+    // 2. Resume Target Storage Mapping Sync
+    db.ref('cvLink').on('value', snap => {
+      if(snap.exists()) {
+        state.cvLink = snap.val();
+        document.getElementById('globalCvActionLink').href = state.cvLink;
+        document.getElementById('inputCvLink').value = state.cvLink;
+      }
+    });
+
+    // 3. Educational Matrix Array Sync
+    db.ref('education').on('value', snap => {
+      state.education = snap.exists() ? snap.val() : {};
+      renderEducationBlock();
+    });
+
+    // 4. Awards Achievement Repos Sync
+    db.ref('awards').on('value', snap => {
+      state.awards = snap.exists() ? snap.val() : {};
+      renderAwardsBlock();
+    });
+
+    // 5. Research Core Structural Blueprint Sync
+    db.ref('research').on('value', snap => {
+      state.research = snap.exists() ? snap.val() : {};
+      renderResearchBlock();
+    });
+
+    // 6. Capability Mappings Matrix Sync
+    db.ref('skills').on('value', snap => {
+      state.skills = snap.exists() ? snap.val() : {};
+      renderSkillsBlock();
+    });
+
+    // 7. Dynamic Creative Space Asset Modules Gallery Categories Sync
+    db.ref('categories').on('value', snap => {
+      state.categories = snap.exists() ? snap.val() : {};
+      renderGalleryTabsAndContentsBlock();
+    });
+
+    // 8. Communications Active Gateways Hub Sync
+    db.ref('contacts').on('value', snap => {
+      state.contacts = snap.exists() ? snap.val() : {};
+      renderContactsBlock();
+    });
+  }
+
+  function renderAllStructuralInterfaceBlocks() {
+    renderEducationBlock();
+    renderAwardsBlock();
+    renderResearchBlock();
+    renderSkillsBlock();
+    renderGalleryTabsAndContentsBlock();
+    renderContactsBlock();
+  }
+
+  /* === UI COMPONENT INJECTORS MATRIX RENDERING === */
+  function renderEducationBlock() {
+    const target = document.getElementById('renderEduTarget');
+    target.innerHTML = '';
+    for (let key in state.education) {
+      const item = state.education[key];
+      let delActionBtn = adminSessionActiveToken ? `<button class="btn btn-danger cms-inline-delete-trigger" onclick="purgeDatabaseNode('education','${key}')"><span class="iconify" data-icon="solar:trash-bin-trash-bold"></span> Drop Metric</button>` : '';
+      target.innerHTML += `
+        <div class="glass-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
+              <h3 style="font-size:22px; color:#fff;">${item.inst}</h3>
+              <span style="background:var(--accent2); font-size:12px; font-weight:700; padding:6px 14px; border-radius:30px; font-family:'Syne';">${item.year}</span>
             </div>
-        </div>
-    </section>
+            <p style="color:var(--text-muted); font-size:15px;">${item.deg}</p>
+          </div>
+          ${delActionBtn}
+        </div>`;
+    }
+  }
 
-    <section id="contact-channels" class="circuit-section-wrapper" style="margin-bottom: 150px;">
-        <h2 class="glowing-vector-title">Communication Portals</h2>
-        <div class="admin-cms-control-panel" id="contactCmsPanel">
-            <h4><i class="fas fa-plus"></i> Open Gateway Interface Channel</h4>
-            <input type="text" id="contactPlatformNameField" placeholder="Portal Gateway Target (e.g., LinkedIn)">
-            <input type="text" id="contactTargetEndpointField" placeholder="URL Address Context String">
-            <input type="text" id="contactPlatformIconField" list="faIconDatalist" placeholder="FA Class Code (e.g., fab fa-linkedin)">
-            <button class="glossy-neon-action-trigger" onclick="pushContactGatewayNode()">Deploy Communications Node</button>
-        </div>
-        <div id="runtimeContactTarget" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:25px;"></div>
-    </section>
+  function renderAwardsBlock() {
+    const target = document.getElementById('renderAwardsTarget');
+    target.innerHTML = '';
+    for (let key in state.awards) {
+      const item = state.awards[key];
+      let delActionBtn = adminSessionActiveToken ? `<button class="btn btn-danger cms-inline-delete-trigger" style="margin-top:15px;" onclick="purgeDatabaseNode('awards','${key}')"><span class="iconify" data-icon="solar:trash-bin-trash-bold"></span> Delete Asset</button>` : '';
+      target.innerHTML += `
+        <div class="glass-card" style="display:flex; gap:20px; align-items:center;">
+          <div style="background:rgba(168,85,247,0.1); padding:20px; border-radius:18px; border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center;">
+            <span class="iconify" data-icon="${item.icon || 'solar:cup-bold'}" style="font-size:36px; color:var(--accent3);"></span>
+          </div>
+          <div style="flex-grow:1;">
+            <h3 style="font-size:18px; margin-bottom:5px; color:#fff;">${item.title}</h3>
+            <span style="color:var(--text-muted); font-size:14px; font-weight:600; font-family:'Syne';">${item.year}</span>
+            ${delActionBtn}
+          </div>
+        </div>`;
+    }
+  }
 
-    <datalist id="faIconDatalist">
-        <option value="fas fa-trophy">Trophy Gold</option>
-        <option value="fas fa-medal">Medal Core Achievement</option>
-        <option value="fas fa-rocket">Rocket Propulsion Carnival</option>
-        <option value="fas fa-graduation-cap">Academic Cap Varsity</option>
-        <option value="fas fa-microchip">EEE Microchip Processing</option>
-        <option value="fas fa-palette">Design Studio Interface</option>
-        <option value="fab fa-github">GitHub Repository Module</option>
-        <option value="fab fa-linkedin">LinkedIn Professional Networking</option>
-        <option value="fas fa-envelope">Secure Electronic Mail Portal</option>
-        <option value="fab fa-whatsapp">WhatsApp Instant Messaging Gateway</option>
-        <option value="fas fa-phone-alt">Voice Audio Terminal Connection</option>
-        <option value="fas fa-award">Generic Honor Node Block</option>
-        <option value="fas fa-bolt">Electrical Circuit Energy Token</option>
-    </datalist>
+  function renderResearchBlock() {
+    const target = document.getElementById('renderResearchTarget');
+    target.innerHTML = '';
+    for (let key in state.research) {
+      const item = state.research[key];
+      let tagsMarkup = '';
+      if(item.tags) {
+        item.tags.split(',').forEach(tag => {
+          if(tag.trim()) tagsMarkup += `<span style="background:var(--glass); border:1px solid var(--glass-border); font-size:12px; padding:4px 12px; border-radius:30px; color:var(--accent3); font-weight:600;">${tag.trim()}</span>`;
+        });
+      }
+      let delActionBtn = adminSessionActiveToken ? `<button class="btn btn-danger cms-inline-delete-trigger" style="align-self:flex-start; margin-top:15px;" onclick="purgeDatabaseNode('research','${key}')"><span class="iconify" data-icon="solar:trash-bin-trash-bold"></span> Drop Paper</button>` : '';
+      target.innerHTML += `
+        <div class="glass-card" style="display:flex; flex-direction:column; gap:15px;">
+          <h3 style="font-size:22px; color:#fff; line-height:1.3;"><span class="iconify" data-icon="solar:document-bold" style="vertical-align:middle; margin-right:8px; color:var(--accent);"></span>${item.title}</h3>
+          <p style="color:var(--text-muted); font-size:15px; text-align:justify;">${item.desc}</p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:5px;">${tagsMarkup}</div>
+          ${delActionBtn}
+        </div>`;
+    }
+  }
 
-    <script>
-        /* === APPLICATION DATABASE PARAMETERS === */
-        const firebaseConfig = {
-            apiKey: "AIzaSyAGBsipDr6skfsvDrYHHCe7CK9AWcCt-dA",
-            authDomain: "portfolio-rk-41348.firebaseapp.com",
-            databaseURL: "https://portfolio-rk-41348-default-rtdb.firebaseio.com",
-            projectId: "portfolio-rk-41348",
-            storageBucket: "portfolio-rk-41348.firebasestorage.app",
-            messagingSenderId: "1012347569431",
-            appId: "1:1012347569431:web:75d9d60efc9513ac63e352",
-            measurementId: "G-EXC67LS81T"
-        };
+  function renderSkillsBlock() {
+    const target = document.getElementById('renderSkillsTarget');
+    target.innerHTML = '';
+    let categoryMap = { "Programming Languages": [], "Engineering Systems": [], "Design & Creative Suites": [] };
+    
+    for (let key in state.skills) {
+      const item = state.skills[key];
+      if (categoryMap[item.category]) {
+        categoryMap[item.category].push({ id: key, name: item.name, icon: item.icon });
+      }
+    }
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+    for (let catKey in categoryMap) {
+      let itemsMarkup = '';
+      categoryMap[catKey].forEach(skill => {
+        let removeCrossAction = adminSessionActiveToken ? `<span class="iconify" data-icon="solar:close-circle-bold" style="color:#ef4444; margin-left:8px; cursor:pointer;" onclick="purgeDatabaseNode('skills','${skill.id}')"></span>` : '';
+        itemsMarkup += `
+          <div class="skill-badge">
+            <span class="iconify" data-icon="${skill.icon || 'solar:atom-bold'}" style="color:var(--accent3);"></span>
+            <span>${skill.name}</span>
+            ${removeCrossAction}
+          </div>`;
+      });
 
-        let sessionAdministrationActiveToken = false;
+      target.innerHTML += `
+        <div>
+          <h4 style="font-size:18px; color:#fff; border-left:4px solid var(--accent); padding-left:12px; margin-bottom:5px;">${catKey}</h4>
+          <div class="skill-badge-container">${itemsMarkup || '<span style="color:var(--text-muted); font-size:14px; padding-left:15px;">No capability tags mapped.</span>'}</div>
+        </div>`;
+    }
+  }
 
-        /* === LIFECYCLE CONTROLLER RECOVERY === */
-        window.onload = () => {
-            if (localStorage.getItem('rkPersistentStudioTokenSecure') === 'verifiedAuth092418') {
-                sessionAdministrationActiveToken = true;
-                igniteAdministrativeCMSLayouts();
-            }
-            evaluateBaselineDatabaseIntegrity();
-            igniteRealtimeDatabaseSyncStreams();
-        };
+  function renderGalleryTabsAndContentsBlock() {
+    const tabsTarget = document.getElementById('renderGalleryTabsTarget');
+    const itemsTarget = document.getElementById('renderGalleryItemsGridTarget');
+    tabsTarget.innerHTML = '';
+    itemsTarget.innerHTML = '';
 
-        /* === MOBILE OVERLAY SCREEN NAVIGATION TRIGGERS === */
-        function openInteractivePhoneMenu() {
-            document.getElementById('mobileOverlayMenuContainer').classList.add('active-view');
-        }
-        function closeInteractivePhoneMenu() {
-            document.getElementById('mobileOverlayMenuContainer').classList.remove('active-view');
-        }
+    const keys = Object.keys(state.categories);
+    if (keys.length === 0) {
+      tabsTarget.innerHTML = '<span style="color:var(--text-muted);">No asset cluster definitions set.</span>';
+      return;
+    }
 
-        /* === PERSISTENT USER AUTHENTICATION PIPELINE === */
-        function triggerSystemAuthentication() {
-            if (sessionAdministrationActiveToken) {
-                if (confirm("Confirm system access command: Terminate active secure admin logging state?")) {
-                    localStorage.removeItem('rkPersistentStudioTokenSecure');
-                    location.reload();
-                }
-            } else {
-                const credentialVector = prompt("Provide Secure Verification Clearance Passkey:");
-                if (credentialVector === "092418") {
-                    sessionAdministrationActiveToken = true;
-                    localStorage.setItem('rkPersistentStudioTokenSecure', 'verifiedAuth092418');
-                    alert("Authorization Cleared. Persistent session token locked.");
-                    igniteAdministrativeCMSLayouts();
-                    igniteRealtimeDatabaseSyncStreams();
-                } else {
-                    alert("Access verification checkpoint failure. Connection vector dropped.");
-                }
-            }
-        }
+    if (!activeCategoryKeyRef || !state.categories[activeCategoryKeyRef]) {
+      activeCategoryKeyRef = keys[0];
+    }
 
-        function igniteAdministrativeCMSLayouts() {
-            document.querySelectorAll('.admin-cms-control-panel').forEach(block => block.style.display = 'block');
-            const targetBtn = document.getElementById('masterAuthSystemBtn');
-            targetBtn.innerHTML = '<i class="fas fa-lock-open" style="color:var(--neon-electric)"></i> Exit Workspace';
-            targetBtn.style.borderColor = 'var(--neon-electric)';
-            targetBtn.style.boxShadow = '0 0 20px var(--neon-spark-glow)';
-        }
+    keys.forEach(key => {
+      const cat = state.categories[key];
+      let activeClassMarker = (key === activeCategoryKeyRef) ? 'active' : '';
+      let removeIconBtn = adminSessionActiveToken ? `<span class="iconify" data-icon="solar:close-circle-bold" style="margin-left:8px; vertical-align:middle; color:#ff6b6b;" onclick="event.stopPropagation(); purgeDatabaseNode('categories','${key}')"></span>` : '';
+      tabsTarget.innerHTML += `<button class="tab-btn ${activeClassMarker}" onclick="switchActiveGalleryCategoryContext('${key}')">${cat.name} ${removeIconBtn}</button>`;
+    });
 
-        /* === PROFILE IMAGING DYNAMIC COORDINATE PROCESSORS === */
-        function applyLiveAvatarTransforms() {
-            const z = document.getElementById('zoomSliderNode').value;
-            const x = document.getElementById('panXSliderNode').value;
-            const y = document.getElementById('panYSliderNode').value;
-            
-            const node = document.getElementById('runtimeAvatarNode');
-            node.style.transform = `scale(${z})`;
-            node.style.objectPosition = `${x}% ${y}%`;
-        }
+    const activeCluster = state.categories[activeCategoryKeyRef];
+    if (activeCluster && activeCluster.assets) {
+      for (let assetKey in activeCluster.assets) {
+        const asset = activeCluster.assets[assetKey];
+        let delActionBtn = adminSessionActiveToken ? `<button class="btn btn-danger" style="width:100%; margin-top:15px; padding:8px 15px; font-size:13px;" onclick="purgeDatabaseNode('categories/${activeCategoryKeyRef}/assets','${assetKey}')"><span class="iconify" data-icon="solar:trash-bin-trash-bold"></span> Drop Asset Link</button>` : '';
+        itemsTarget.innerHTML += `
+          <div class="glass-card" style="text-align:center; display:flex; flex-direction:column; justify-content:space-between; align-items:center;">
+            <div style="background:rgba(124,58,237,0.08); padding:30px; border-radius:20px; width:100%; border:1px solid var(--glass-border); margin-bottom:15px; font-size:50px; color:var(--accent2); display:flex; align-items:center; justify-content:center;">
+              <span class="iconify" data-icon="solar:palette-bold"></span>
+            </div>
+            <h4 style="font-size:16px; font-family:'Syne'; margin-bottom:15px; color:#fff;">${asset.title}</h4>
+            <a href="${asset.url}" target="_blank" class="btn" style="width:100%; justify-content:center; padding:10px 15px; font-size:14px;"><span class="iconify" data-icon="solar:link-bold"></span> Open Design Link</a>
+            ${delActionBtn}
+          </div>`;
+      }
+    } else {
+      itemsTarget.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding:40px 0;">No creative vector designs tracked under this specific segment folder yet.</div>';
+    }
+  }
 
-        function commitAvatarTransformPayload() {
-            const link = document.getElementById('rawGithubLinkField').value;
-            const z = document.getElementById('zoomSliderNode').value;
-            const x = document.getElementById('panXSliderNode').value;
-            const y = document.getElementById('panYSliderNode').value;
+  function switchActiveGalleryCategoryContext(key) {
+    activeCategoryKeyRef = key;
+    renderGalleryTabsAndContentsBlock();
+  }
 
-            const updateMap = { zoom: z, posX: x, posY: y };
-            if (link) updateMap.url = link;
+  function renderContactsBlock() {
+    const target = document.getElementById('renderContactGatewaysTarget');
+    target.innerHTML = '';
+    for (let key in state.contacts) {
+      const item = state.contacts[key];
+      let delActionBtn = adminSessionActiveToken ? `<button class="btn btn-danger" style="padding:6px 14px; font-size:12px; margin-top:10px;" onclick="event.preventDefault(); purgeDatabaseNode('contacts','${key}')"><span class="iconify" data-icon="solar:trash-bin-trash-bold"></span> Purge</button>` : '';
+      target.innerHTML += `
+        <a href="${item.url}" target="_blank" class="glass-card contact-card">
+          <span class="iconify" data-icon="${item.icon || 'solar:link-bold'}"></span>
+          <h3 style="font-size:18px; margin-bottom:5px; color:#fff;">${item.platform}</h3>
+          ${delActionBtn}
+        </a>`;
+    }
+  }
 
-            db.ref('profile/avatarConfig').update(updateMap, err => {
-                if(!err) alert("Image geometry coordinate transformation payload synchronized.");
-            });
-        }
+  /* === CMS INTERFACE WRITE DATA EXECUTION PIPELINES === */
+  function commitProfileMetadata() {
+    const name = document.getElementById('inputProfileName').value;
+    const tagline = document.getElementById('inputProfileTagline').value;
+    const img = document.getElementById('inputProfileImage').value;
+    
+    db.ref('profile').set({ name, tagline, img }, err => {
+      if(!err) alert("Profile layout schema metrics updated globally across all spaces.");
+    });
+  }
 
-        /* === TRACK-DATA INJECTOR AUTOMATED BASELINE GENERATOR === */
-        function evaluateBaselineDatabaseIntegrity() {
-            db.ref('cvLink').once('value', snapshot => {
-                if(!snapshot.exists()) db.ref('cvLink').set("https://drive.google.com/file/d/1gAzA8MhB3u5zDfUSCMtMANk3hZlVgp0K/view?usp=sharing");
-            });
+  function commitCvTargetLink() {
+    const link = document.getElementById('inputCvLink').value;
+    if(!link) return alert("Variable empty.");
+    db.ref('cvLink').set(link, err => {
+      if(!err) alert("CV Registry Target URL changed safely.");
+    });
+  }
 
-            db.ref('education').once('value', snap => {
-                if(!snap.exists()) {
-                    db.ref('education').push({ inst: "Ahsanullah University of Science & Technology (AUST)", deg: "B.Sc. in Electrical and Electronic Engineering (EEE)", year: "2024-Present" }); [cite: 9, 10, 11]
-                    db.ref('education').push({ inst: "Notre Dame College, Dhaka", deg: "Higher Secondary Certificate (HSC) | GPA: 5.00", year: "2023" }); [cite: 12, 13]
-                    db.ref('education').push({ inst: "Narayanganj Ideal School", deg: "Secondary School Certificate (SSC) | GPA: 5.00", year: "2021" }); [cite: 14, 15]
-                }
-            });
+  function pushEducationNode() {
+    const inst = document.getElementById('eduInst').value;
+    const deg = document.getElementById('eduDeg').value;
+    const year = document.getElementById('eduYear').value;
+    if (!inst || !deg || !year) return alert("Fill operational parameter boundaries correctly.");
 
-            db.ref('awards').once('value', snap => {
-                if(!snap.exists()) {
-                    db.ref('awards').push({ title: "Champion - CS Congress Research Paper", year: "2020", icon: "fas fa-trophy" }); [cite: 39]
-                    db.ref('awards').push({ title: "Champion - BDPHO Regional Round", year: "2020", icon: "fas fa-medal" }); [cite: 40]
-                    db.ref('awards').push({ title: "4th Place - 4th National Space Carnival", year: "2020", icon: "fas fa-rocket" }); [cite: 41]
-                    db.ref('awards').push({ title: "Champion - SJC Math Mania", year: "2020", icon: "fas fa-award" }); [cite: 42]
-                    db.ref('awards').push({ title: "Champion - HCC Science Fest", year: "2022", icon: "fas fa-award" }); [cite: 43]
-                    db.ref('awards').push({ title: "Bronze Honor - International Astronomy Olympiad", year: "2023", icon: "fas fa-globe" }); [cite: 48]
-                    db.ref('awards').push({ title: "Ranked 61st - 13th National Archery Championship, Bangladesh", year: "Sports", icon: "fas fa-bullseye" }); [cite: 55, 56]
-                }
-            });
+    db.ref('education').push({ inst, deg, year }, err => {
+      if (!err) {
+        alert("Educational array node pushed safely.");
+        clearFields(['eduInst', 'eduDeg', 'eduYear']);
+      }
+    });
+  }
 
-            db.ref('skills').once('value', snap => {
-                if(!snap.exists()) {
-                    db.ref('skills').push({ category: "Programming Matrix", name: "C / C++ Matrix Engine" }); [cite: 58]
-                    db.ref('skills').push({ category: "Engineering Systems", name: "Quartus II System Logic" }); [cite: 59]
-                    db.ref('skills').push({ category: "Engineering Systems", name: "LTSpice Circuit Simulation" }); [cite: 59]
-                    db.ref('skills').push({ category: "Creative Suites", name: "Canva Pro Graphic Design Framework" }); [cite: 59]
-                }
-            });
-        }
+  function pushAwardNode() {
+    const title = document.getElementById('awardTitle').value;
+    const year = document.getElementById('awardYear').value;
+    const icon = document.getElementById('awardIcon').value || "solar:cup-bold";
+    if (!title || !year) return alert("Title and event context indexes are mandatory.");
 
-        /* === CORE REALTIME STREAM SYNCHRONIZER (READ) === */
-        function igniteRealtimeDatabaseSyncStreams() {
-            // Profile Matrix Sync Stream
-            db.ref('profile/avatarConfig').on('value', snap => {
-                if(snap.exists()) {
-                    const data = snap.val();
-                    const imgNode = document.getElementById('runtimeAvatarNode');
-                    if(data.url) imgNode.src = data.url;
-                    imgNode.style.transform = `scale(${data.zoom || 1})`;
-                    imgNode.style.objectPosition = `${data.posX || 50}% ${data.posY || 50}%`;
-                    
-                    // Populate sliders in admin panel if logged in
-                    document.getElementById('zoomSliderNode').value = data.zoom || 1;
-                    document.getElementById('panXSliderNode').value = data.posX || 50;
-                    document.getElementById('panYSliderNode').value = data.posY || 50;
-                }
-            });
+    db.ref('awards').push({ title, year, icon }, err => {
+      if(!err) {
+        alert("Honor registry database node tracking updated.");
+        clearFields(['awardTitle', 'awardYear', 'awardIcon']);
+      }
+    });
+  }
 
-            // CV Target Pipeline Sync Stream
-            db.ref('cvLink').on('value', snap => {
-                if(snap.exists()) {
-                    const trackingUrl = snap.val();
-                    document.getElementById('uiActionViewCvBtn').href = trackingUrl;
-                    document.getElementById('uiActionDownloadCvBtn').href = trackingUrl;
-                }
-            });
+  function pushResearchNode() {
+    const title = document.getElementById('researchTitle').value;
+    const desc = document.getElementById('researchDesc').value;
+    const tags = document.getElementById('researchTags').value;
+    if(!title || !desc) return alert("Abstract parameter payload structure data values missing.");
 
-            // Academic Stream Sync Loop
-            db.ref('education').on('value', snap => {
-                const target = document.getElementById('runtimeEducationTarget');
-                target.innerHTML = '';
-                snap.forEach(child => {
-                    const data = child.val();
-                    let adminBlock = sessionAdministrationActiveToken ? `<button class="cms-inline-delete-trigger" onclick="purgeTargetNode('education','${child.key}')"><i class="fas fa-trash"></i> Drop Entry</button>` : '';
-                    target.innerHTML += `
-                        <div class="glassmorphic-node-card">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px;">
-                                <div>
-                                    <h3 style="font-family:'Orbitron'; font-size:20px; color:#fff;">${data.inst}</h3>
-                                    <p style="color:var(--text-dim); margin-top:6px; font-weight:600;">${data.deg}</p>
-                                </div>
-                                <div style="color:var(--neon-electric); font-weight:700; font-family:'Orbitron'; font-size:14px;">${data.year}</div>
-                            </div>
-                            ${adminBlock}
-                        </div>`;
-                });
-            });
+    db.ref('research').push({ title, desc, tags }, err => {
+      if(!err) {
+        alert("Research publication asset logged to ecosystem.");
+        clearFields(['researchTitle', 'researchDesc', 'researchTags']);
+      }
+    });
+  }
 
-            // Awards Stream Sync Loop
-            db.ref('awards').on('value', snap => {
-                const target = document.getElementById('runtimeAwardsTarget');
-                target.innerHTML = '';
-                snap.forEach(child => {
-                    const data = child.val();
-                    let adminBlock = sessionAdministrationActiveToken ? `<button class="cms-inline-delete-trigger" onclick="purgeTargetNode('awards','${child.key}')"><i class="fas fa-trash"></i> Drop Asset</button>` : '';
-                    target.innerHTML += `
-                        <div class="glassmorphic-node-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
-                            <div style="display:flex; align-items:center; gap:20px;">
-                                <i class="${data.icon || 'fas fa-award'}" style="font-size:32px; color:var(--neon-electric); text-shadow: 0 0 15px var(--neon-spark-glow)"></i>
-                                <span style="font-size:17px; font-weight:700;">${data.title}</span>
-                            </div>
-                            <div style="color:var(--text-dim); font-weight:700; font-family:'Orbitron'">${data.year}</div>
-                            ${adminBlock}
-                        </div>`;
-                });
-            });
+  function pushSkillNode() {
+    const category = document.getElementById('skillCategorySelector').value;
+    const name = document.getElementById('skillNameString').value;
+    const icon = document.getElementById('skillBadgeIcon').value || "solar:atom-bold";
+    if(!name) return alert("Specify identifier string.");
 
-            // Technical Matrix Clusters Sync Loop
-            db.ref('skills').on('value', snap => {
-                const target = document.getElementById('runtimeSkillsTarget');
-                target.innerHTML = '';
-                let map = {"Programming Matrix": [], "Engineering Systems": [], "Creative Suites": []};
-                
-                snap.forEach(child => {
-                    const data = child.val();
-                    if(map[data.category]) map[data.category].push({id: child.key, payload: data.name});
-                });
+    db.ref('skills').push({ category, name, icon }, err => {
+      if(!err) {
+        alert("Skill cluster token mapped safely.");
+        clearFields(['skillNameString', 'skillBadgeIcon']);
+      }
+    });
+  }
 
-                for (let clusteringKey in map) {
-                    let clustersMarkup = '';
-                    map[clusteringKey].forEach(item => {
-                        let delAction = sessionAdministrationActiveToken ? `<i class="fas fa-times-circle" style="color:#ff4444; margin-left:10px; cursor:pointer;" onclick="purgeTargetNode('skills','${item.id}')"></i>` : '';
-                        clustersMarkup += `<span class="interactive-skill-badge"><i class="fas fa-atom" style="color:var(--neon-electric); margin-right:8px"></i> ${item.payload} ${delAction}</span>`;
-                    });
+  function pushNewGalleryCategory() {
+    const name = document.getElementById('newCatName').value;
+    if(!name) return alert("Naming configuration reference code required.");
 
-                    target.innerHTML += `
-                        <div class="glassmorphic-node-card">
-                            <h3 style="font-family:'Orbitron'; color:var(--neon-electric); font-size:18px; margin-bottom:20px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;"><i class="fas fa-bolt"></i> ${clusteringKey}</h3>
-                            <div>${clustersMarkup || '<span style="color:var(--text-dim); font-size:13px">No vector fields tracked</span>'}</div>
-                        </div>`;
-                }
-            });
+    db.ref('categories').push({ name: name }, err => {
+      if(!err) {
+        alert("Category entity layout folder initialized.");
+        clearFields(['newCatName']);
+      }
+    });
+  }
 
-            // Creative Canvas Sync Loop
-            db.ref('designs').on('value', snap => {
-                const target = document.getElementById('runtimeDesignsTarget');
-                target.innerHTML = '';
-                snap.forEach(child => {
-                    const data = child.val();
-                    let adminBlock = sessionAdministrationActiveToken ? `<button class="cms-inline-delete-trigger" style="width:100%; margin-top:15px" onclick="purgeTargetNode('designs','${child.key}')"><i class="fas fa-trash"></i> Drop Asset</button>` : '';
-                    target.innerHTML += `
-                        <div class="glassmorphic-node-card" style="text-align:center;">
-                            <i class="fas fa-palette" style="font-size:45px; color:var(--neon-electric); margin-bottom:20px; text-shadow:0 0 15px var(--neon-spark-glow)"></i>
-                            <h4 style="font-family:'Orbitron'; font-size:16px; margin-bottom:20px;">${data.name}</h4>
-                            <a href="${data.link}" target="_blank" class="glossy-neon-action-trigger" style="width:100%; justify-content:center;"><i class="fab fa-google-drive"></i> Open Vector Workspace</a>
-                            ${adminBlock}
-                        </div>`;
-                });
-            });
+  function pushAssetToCurrentActiveCategory() {
+    if (!activeCategoryKeyRef) return alert("Create an active category track sequence cluster first.");
+    const title = document.getElementById('assetTitle').value;
+    const url = document.getElementById('assetDriveUrl').value;
+    if (!title || !url) return alert("Resource URL tracking configuration path values missing.");
 
-            // Communications Routing Sync Loop
-            db.ref('contact').on('value', snap => {
-                const target = document.getElementById('runtimeContactTarget');
-                target.innerHTML = '';
-                snap.forEach(child => {
-                    const data = child.val();
-                    let adminBlock = sessionAdministrationActiveToken ? `<button class="cms-inline-delete-trigger" style="width:100%; margin-top:15px" onclick="purgeTargetNode('contact','${child.key}')"><i class="fas fa-trash"></i> Purge Portal</button>` : '';
-                    target.innerHTML += `
-                        <div class="glassmorphic-node-card" style="text-align:center;">
-                            <i class="${data.icon || 'fas fa-link'}" style="font-size:38px; color:var(--neon-electric); margin-bottom:15px;"></i>
-                            <h4 style="font-family:'Orbitron'; font-size:16px; margin-bottom:8px;">${data.platform}</h4>
-                            <a href="${data.endpoint}" target="_blank" class="glossy-neon-action-trigger" style="width:100%; justify-content:center; padding:8px 15px; font-size:13px;">Connect Portal</a>
-                            ${adminBlock}
-                        </div>`;
-                });
-            });
-        }
+    db.ref(`categories/${activeCategoryKeyRef}/assets`).push({ title, url }, err => {
+      if(!err) {
+        alert("Asset resource target linked inside category mapping.");
+        clearFields(['assetTitle', 'assetDriveUrl']);
+      }
+    });
+  }
 
-        /* === CORE WRITE ENGINES FOR SECURE DATA MANAGEMENT === */
-        function pushEducationNode() {
-            const inst = document.getElementById('eduInstField').value;
-            const deg = document.getElementById('eduDegreeField').value;
-            const year = document.getElementById('eduTimelineField').value;
-            if(!inst || !deg || !year) return alert("Validation error: Incomplete schema variables.");
-            db.ref('education').push({ inst, deg, year }, err => {
-                if(!err) { alert("Academic matrix node deployed."); resetFields(['eduInstField', 'eduDegreeField', 'eduTimelineField']); }
-            });
-        }
+  function pushContactGatewayNode() {
+    const platform = document.getElementById('contactPlatformName').value;
+    const url = document.getElementById('contactEndpointUrl').value;
+    const icon = document.getElementById('contactPlatformIcon').value || "solar:link-bold";
+    if (!platform || !url) return alert("Active endpoints structural context maps missing.");
 
-        function pushAwardNode() {
-            const title = document.getElementById('awardTitleField').value;
-            const year = document.getElementById('awardYearField').value;
-            const icon = document.getElementById('awardIconField').value || "fas fa-award";
-            if(!title || !year) return alert("Validation error: Honor schema variables incomplete.");
-            db.ref('awards').push({ title, year, icon }, err => {
-                if(!err) { alert("Achievement node pushed successfully."); resetFields(['awardTitleField', 'awardYearField', 'awardIconField']); }
-            });
-        }
+    db.ref('contacts').push({ platform, url, icon }, err => {
+      if(!err) {
+        alert("Communication network link gateway deployed live.");
+        clearFields(['contactPlatformName', 'contactEndpointUrl', 'contactPlatformIcon']);
+      }
+    });
+  }
 
-        function pushSkillNode() {
-            const category = document.getElementById('skillCategorySelectorNode').value;
-            const name = document.getElementById('skillNameStringField').value;
-            if(!name) return alert("Validation error: Capability parameter target missing.");
-            db.ref('skills').push({ category, name }, err => {
-                if(!err) { alert("Capability mapping token deployed."); resetFields(['skillNameStringField']); }
-            });
-        }
+  /* === SECURE HARD PURGE LOGIC CHAIN (DELETE) === */
+  function purgeDatabaseNode(path, key) {
+    if (confirm(`Permanent deletion targeted at path sequence: [/${path}/${key}]. Execute drop operation code?`)) {
+      db.ref(`${path}/${key}`).remove()
+        .catch(err => alert("System database crash dropped request event trigger execution trace: " + err));
+    }
+  }
 
-        function pushDesignNode() {
-            const name = document.getElementById('designProjectTitleField').value;
-            const link = document.getElementById('designDriveUrlField').value;
-            if(!name || !link) return alert("Validation error: Showcase workspace entities parameters structural gap.");
-            db.ref('designs').push({ name, link }, err => {
-                if(!err) { alert("Asset catalog record logged."); resetFields(['designProjectTitleField', 'designDriveUrlField']); }
-            });
-        }
+  /* === HELPER CORE INTERFACE UTILS === */
+  function clearFields(fieldsArray) {
+    fieldsArray.forEach(id => document.getElementById(id).value = '');
+  }
 
-        function commitCvTargetLink() {
-            const link = document.getElementById('cvDriveAddressField').value;
-            if(!link) return alert("URL path definition missing.");
-            db.ref('cvLink').set(link, err => {
-                if(!err) { alert("System CV routing registry updated."); resetFields(['cvDriveAddressField']); }
-            });
-        }
+  function launchIconSelectionFlow(inputIdTarget) {
+    activeSelectedInputIconTargetId = inputIdTarget;
+    document.getElementById('globalIconModal').style.display = "flex";
+    filterIconModalList();
+  }
 
-        function pushContactGatewayNode() {
-            const platform = document.getElementById('contactPlatformNameField').value;
-            const endpoint = document.getElementById('contactTargetEndpointField').value;
-            const icon = document.getElementById('contactPlatformIconField').value || "fas fa-link";
-            if(!platform || !endpoint) return alert("Validation error: Network infrastructure channel parameters invalid.");
-            db.ref('contact').push({ platform, endpoint, icon }, err => {
-                if(!err) { alert("Communication route gateway operational."); resetFields(['contactPlatformNameField', 'contactTargetEndpointField', 'contactPlatformIconField']); }
-            });
-        }
+  function closeIconModal() {
+    document.getElementById('globalIconModal').style.display = "none";
+  }
 
-        /* === GLOBAL HARD TERMINATION SCRIPTER (DELETE) === */
-        function purgeTargetNode(routingPath, entityKey) {
-            if(confirm(`System override confirmation: Permanently prune object target node entity ID [${entityKey}] from database context directory path [/${routingPath}]?`)) {
-                db.ref(`${routingPath}/${entityKey}`).remove()
-                    .then(() => alert("Data token safely severed from production environment."))
-                    .catch(err => alert("System fault encountered during object drop: " + err));
-            }
-        }
+  function filterIconModalList() {
+    const filter = document.getElementById('iconSearchInput').value.toLowerCase();
+    const grid = document.getElementById('iconModalTargetGrid');
+    grid.innerHTML = '';
+    
+    staticIconMatrixCatalog.forEach(ic => {
+      if (ic.toLowerCase().includes(filter)) {
+        grid.innerHTML += `<div class="icon-choice" onclick="selectIconToInputFieldPayload('${ic}')"><span class="iconify" data-icon="${ic}"></span></div>`;
+      }
+    });
+  }
 
-        function resetFields(idArray) {
-            idArray.forEach(id => document.getElementById(id).value = '');
-        }
-    </script>
+  function selectIconToInputFieldPayload(iconStringValue) {
+    if(activeSelectedInputIconTargetId) {
+      document.getElementById(activeSelectedInputIconTargetId).value = iconStringValue;
+    }
+    closeIconModal();
+  }
+  </script>
 </body>
 </html>
